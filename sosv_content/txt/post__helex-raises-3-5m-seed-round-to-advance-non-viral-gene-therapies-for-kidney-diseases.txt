@@ -1,0 +1,5 @@
+A new hope for patients with genetic kidney diseases.
+Helex, an SOSV portfolio company and graduate of the IndieBio startup development program, which is developing a new class of targeted medicines for genetic kidney disorders, announced its $3.5M Seed round, led by pi Ventures, with participation from Bluehill Capital, SOSV, and others.
+Helex is tackling one of biotech’s toughest challenges: delivering genetic medicines directly to the kidney. Using programmable, non-viral lipid nanoparticles (LNPs), the company can deliver therapeutic cargo precisely where it’s needed, unlocking a new generation of disease-modifying treatments for millions of patients who currently have no effective options.
+Its first target: Autosomal Dominant Polycystic Kidney Disease (ADPKD), a genetic disorder affecting 12M people worldwide and often leading to dialysis or transplant. Helex aims to change that with a single-dose, non-viral gene-editing therapy that could halt or even reverse disease progression.
+Read their press release in the Financial Times:

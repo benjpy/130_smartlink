@@ -1,0 +1,7 @@
+Pitchbook has launched its first report on Carbon Emissions Tech.
+“As legislation, policy, and net-zero emissions pledges encourage decarbonization across the globe, startups developing carbon & emissions tech are reeling in investors. The vertical is poised for strong continued growth thanks to increasing global focus on aggressive emissions targets and consumer interest in emissions reduction. PitchBook analysts estimate the overall market will reach $905.0 billion in 2022.”
+The report mainly covers companies doing either:
+- Removal of emitted carbon dioxide (either from the point of emission or from the atmosphere, post-emission).
+- Using alternative processes that produce lower levels of emissions relative to conventional approaches (e.g. for cement, fertilizers, mining, etc.)
+SOSV has been actively investing in the category via its startup programs HAX and IndieBio and topped the ranking of VC investors.
+A selection of Carbon Emissions Tech companies will be speaking at the upcoming SOSV Climate Tech Summit (Oct 25-26, virtual, free) including Climeworks (first unicorn in direct air capture), Brilliant Planet (algae-based carbon capture) and more. Investors MCJ Collective, Khosla Ventures will also be participating in panel discussions.

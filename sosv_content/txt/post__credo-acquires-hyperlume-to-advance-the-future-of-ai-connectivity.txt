@@ -1,0 +1,10 @@
+Today, we’re excited to announce that our SOSV portfolio company and HAX startup development program graduate Hyperlume, a pioneer in MicroLED-based optical interconnect technology, has been acquired by Credo (NASDAQ: CRDO).
+This marks a major step forward in delivering secure, high-speed connectivity solutions that are more reliable, energy efficient, and ready for the AI era.
+Impact on the AI World
+The explosion of AI and hyperscale data center workloads is pushing existing connectivity infrastructure to its limits. Traditional electronic interconnects face serious energy and bandwidth bottlenecks that slow scaling and increase costs.
+GPU performance has improved ~40,000x since 2000. But the networks that connect those chips have only improved ~80x, creating a significant bottleneck. Today, most GPUs still transfer data via copper cables, an antiquated method that’s cheap but highly inefficient (it generates excessive heat and wastes energy). Laser-based optical cables exist, but they’re 5x more expensive than copper and don’t scale well within tightly packed racks where 40% of the interconnects live.
+To keep pace with the exponential growth of data, the world needs a new class of connectivity.
+That’s where Hyperlume’s breakthrough MicroLED technology comes in. By using high bandwidth, low latency, low power interconnects for AI data centers and high-performance computing systems, Hyperlume has created a new way to overcome the energy and bandwidth bottlenecks inherent in traditional electronic interconnects.
+With this acquisition, Credo now offers one of the most comprehensive connectivity platforms in the industry and strengthens their ability to help customers scale massive AI networks more efficiently and sustainably.
+Huge congratulations to Hyperlume co-founders Mohsen Asad (CEO) and Hossein Fariborzi (CTO). When they first joined HAX in 2023, as part of our ever-expanding thesis into next-gen compute and data centres power, their mix of deep technical expertise and conviction is why we invested early.
+Read more in Credo’s press release announcing the acquisition here.

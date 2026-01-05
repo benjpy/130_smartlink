@@ -1,0 +1,60 @@
+If you missed some of the 12 hours of interviews and panels (video | podcast replays), or the 10 hours of live AMAs with investors (video replays), here is a quick take on the highlights of our third annual SOSV Climate Tech Summit.
+But first, we’d like to offer our heartfelt gratitude to the 100 speakers at the summit who covered everything from the new generation of nuclear reactors to carbon capture in its many forms. Those 24 main stage sessions attracted 4,000 attendees—a 30% jump from last year’s Summit.
+We’re also grateful to the 1,800 founders and investors who joined our virtual VC-Founder Climate Tech Matchup and took more than 3,500 1:1 meetings! We hope the matchup helped some climate founders and technologies get funded.
+With that, here are the top themes we picked up over the course of the event:
+- Enthusiasm remains despite a clear slowdown
+While everyone is concerned about the H1 year-on-year decline in later stage venture investments, most VCs and founders see the slow down as a healthy pause rather than a serious issue. And as a category, climate has more sustained excitement than most.
+“It’s not exactly exuberance, but I think we’re getting really serious about the climate problem and starting to click the things in place so that even in a market downturn, companies can still move forward.”
+—Dr. Rachel Slaybaugh, Partner at DCVC (watch her session here)
+- The Biden Administration’s Inflation Reduction Act is starting to have an impact
+The US government’s $400B IRA package, signed in August 2022, is incentivizing massive investment in decarb deployments as well as encouraging entrepreneurial activity and investment.
+“What the inflation reduction Act does is effectively puts clean energy on sale through a variety of tax credits, grants, loan guarantees, rebate programs, etc.”
+“This first year is a lot about setting the stage, and really I think the next three years is where we’re going to see steel in the ground and the rubber meet the road. But we are seeing a lot of announced projects, so that’s where we’re starting to see the leading indicators of where things are going…tens of billions of dollars of announced investment in everything from wind and solar to manufacturing facilities for batteries and EVs to hydrogen facilities, carbon capture pipelines, etc..”
+—Professor Jesse Jenkins of Princeton’s ZERO Lab (session here)
+- There’s an emerging playbook for getting first-of-a-kind climate projects off the ground.
+There is a growing understanding on how to build and fund important “first-of-a-kind” climate technologies (see CTVC’s coverage of this session here).
+“I think one of the most under-appreciated risks involved in building a first or nth-of-a-kind project, is the actual development of the project. It takes a lot of different stakeholders to come together to actually build a successful project.”
+“Far too often, I hear from an entrepreneur or a venture capitalist, “We’ve proven it at pilot scale. It’s ready. It’s ready for Citibank to make a loan and for Generate to take the equity stake.” That’s the wrong conversation to have. The conversation needs to be, “How many hours has it operated successfully, continuously in the exact form we’re talking about proposing for this next iteration of it? How many blue-chip players have been willing to put their seal of approval on it, whether it’s an insurance provider or an EPC or a customer willing to buy the output?”
+—Scott Jacobs, CEO and Co-Founder of Generate (session here)
+- Climate technologies are reaching key milestones for impact
+This year’s Summit made it clear that some important climate technologies are getting incredibly close to having a major impact. Among them: carbon removal technologies and long duration energy storage.
+“There is no choice between carbon removal and decarbonization. We have to start scaling up permanent CDR today, if you want to have any chance of limiting temperature rise to the Paris agreement targets or reversing climate change.”
+—Shashank Samala, CEO and Co-Founder of Heirloom (session here)
+“We decided to go directly to building a commercial demonstration facility that is working directly into the grid…With this approach, we have been able to demonstrate to investors that the technology is working. Every visitor that comes to the plant is impressed and says “This isn’t a demo, this is a plant, it’s working.’”
+—Claudio Spadacini, CEO and Co-Founder of Energy Dome (session here)
+A special shout out in the alt protein category UPSIDE Foods, whose cell cultivated chicken is now approved for sale in the United States. UPSIDE Foods also recently announced its first commercial-scale plant, Rubicon:
+“The only way to get rid of [animal slaughter] and still have animal cells that we love to eat is cultivated meat, and that’s not a simple innovation. It’s a transformative innovation…It’s absolutely important for the world to recognize that technology like this cannot live on paper forever with models. You have to build it, learn from it, and scale it. And Rubicon is at such a large industrial scale, any industrial manufacturer can come walk through it and say ‘I get it. I see the cultivators here making meat. I see the meat being harvested and being packaged here.”
+—Dr. Uma Valeti, founder of UPSIDE Foods (session here)
+- It’s time to get real about energy
+A consensus is emerging that solar and wind alone won’t get the energy job done, as they are intermittent, take a lot of space, and rely on critical minerals—which we need a lot more of.
+“Lithium supply is the essential part of battery manufacturing. […] Lithium production will need to ramp up by approximately 20x over the next twenty years.”
+—Dave Snydacker, CEO and Founder, Lilac Solutions (session here)
+“Copper is an essential for the clean energy transition. […] Electric vehicles require two to five times as much copper compared to traditional vehicles.”
+—Jon Vardner, CEO, co-Founder, Still Bright (session here)
+One solution could be the long-decried nuclear power, now making a comeback. Notable climate tech investors like Vinod Khosla agree.
+“Small modular reactors are well suited to more remote regions, offshore deployments, hydrogen production, focused industrial applications that may require heat or steam or as an ideal complement to smaller scale renewable installations. And today we see over seventy companies developing advanced nuclear technologies around the world, many of which are just a few megawatts to a few hundred megawatts per unit.”
+—Shannon Bragg-Sitton, Director of Integrated Energy & Storage Systems Idaho National Laboratory (session here)
+“In the ten years before the second world war, we built maybe 5 or 10 Liberty warships. In the five years after the start of the war, we built 5,000. I think a fusion boiler will be easier to build than a Liberty warship, and you should be able to replace every boiler in every coal and natural gas plant within 5 to 10 years. That’s why I’m optimistic.”
+—Vinod Khosla, Founder of Khosla Ventures (session here)
+- Growing while green: the challenge in the Global South
+We hosted our first panel covering emerging economies with VCs from Southeast Asia, India, Africa, and Latin America.
+Clearly, solutions with a high “green premium” won’t work in those regions, while mature tech like EVs and solar could help economies grow and leapfrog to a green economy. The key bottlenecks are financing models (e.g. a $10k solar rooftop) and workforce training to deploy solutions.
+Which other technologies could be deployed at scale to avoid a surge in emissions and take advantage of each region’s advantages? Take the example of carbon removal:
+“Once you really zero in on the scale of carbon removal we’re gonna have to do across the planet…in case after case, what you find is multiple countries in Africa have some of the best conditions for deploying at scale anywhere in the world. It’s just a question of bringing them to the fore which is what we do.”
+—James Mwangi, Founder and CEO of Africa Climate Ventures (session here)
+- Anyone can work in climate
+The impact of driving an EV, taking short showers, or composting (reducing our ‘carbon footprint’) amounts to a fraction of the impact of working in climate (growing our ‘climate shadow’). We hosted our first panel dedicated to climate jobs, with 4 climate community leaders, and an AMA on green talent recruiting.
+“When most people think ‘climate job’, they think ‘not me’. They think that it is something for climate scientists or politicians, activists, maybe for solar installers, but people absolutely do not realize that is something that they can actually do.”
+—Eugene Kirpichov, Co-Founder and Executive Director at Work On Climate (panel here)
+“I’ve never heard of a job function that I couldn’t apply a climate lens to.”
+—Jamie Alexander, Director at Drawdown Labs (panel here)
+- Top climate investors have advice for founders
+In addition to the 24 interviews and panels, we hosted 18 AMAs with notable investors in climate. Each of them answered dozens of audience questions in real time, addressing topics like what climate founders can do to successfully scale and attract investment, and the segments VCs are seeing the most opportunities in.
+To hear more from SOSV, Khosla Ventures, At One Ventures, The Engine, EIP, Prelude, Fifth Wall, MCJ, and a dozen more, head over here.
+- Virtual matchups increasingly work to fund founders
+To have more shots on goal, we need to fund more startups. To achieve this, founders need to find the right investors. We did our best to help facilitate this via our second Climate Tech Founder / Investor virtual matchmaking. We saw a massive increase in RSVPs this year (up 62%), yet another indication of the dynamism of the climate tech sector. With a 1:1 VC/founder ratio and close to 1,800 participants, the matchup generated an estimated 3,500 meetings.
+To hear about the next one, sign up here.
+- Climate tech is growing up
+Climate tech is getting real, and we’ll leave the closing words to Sean O’Sullivan, Founder and Managing Partner of SOSV:
+“When I reflect on the conversations at this Summit compared to prior years, it is striking how much the climate tech world is growing up. In particular, we’re seeing less powerpoint and spreadsheet fantasies and more of what I call real world conversations.”
+We look forward to even faster innovation and deployment in the coming year!

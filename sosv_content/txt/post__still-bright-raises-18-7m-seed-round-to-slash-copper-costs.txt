@@ -1,0 +1,11 @@
+Skyrocketing demand for copper promises to push prices to new heights. As the global economy transitions away from fossil fuels, it is going to need twice as much copper in the coming years than humanity has mined throughout all of its existence.
+SOSV portfolio company and HAX startup development program graduate Still Bright has developed a new (cleaner) way to extract copper:
+🔹 Extracts nearly all the copper from typical ores (compared to losing up to 20% with current methods)
+🔹 Works even on tailings, the massive discard piles that still contain smaller amounts of the metal that mines leave behind
+🔹 Produces copper without toxic pollution
+🔹 Uses a modular system that will be able to be installed at mines spanning a range of sizes, because the vanadium-based process works so quickly, the company’s equipment is much smaller than a typical refiner for the same amount of copper production
+🔹 Costs up to 90% less than traditional pyrometallurgical equipment
+To boost production from single digits to hundreds of tons per year, Still Bright has raised an $18.7 million seed round led by Material Impact and Breakthrough Energy Ventures, with participation from Azolla Ventures, Fortescue, Impact Science Ventures, and SOSV.
+By 2027 or 2028, the team plans to deploy a demo unit producing 500 tons annually with an ultimate commercial system delivering 10,000 tons per year.
+“We see ourselves as having a path to be among the cheapest copper producers,” Randy Allen, co-founder and CEO of Still Bright, told TechCrunch.
+As HAX residents in our Newark, NJ headquarters, we’ve had the chance to support the team hands on and see their commitment in action every day as they work in our lab.

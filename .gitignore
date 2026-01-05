@@ -1,0 +1,8 @@
+.env
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
+.streamlit/
+# Ignore other search script versions if desired, but keeping them for now as per user request to "prepare this app"
+# usually implies the current active one is the main one.

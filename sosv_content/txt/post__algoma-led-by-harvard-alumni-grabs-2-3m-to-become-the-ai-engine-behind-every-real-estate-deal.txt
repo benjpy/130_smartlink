@@ -1,0 +1,15 @@
+We’re thrilled to announce that Algoma, a participant in our HAX startup development program has secured a $2.3M Seed round led by Zacua Ventures, with participation from SOSV, Iron Prairie Ventures, DOMiNO Ventures, Compose VC and a network of angel investors across AI, construction, and real estate.
+Real estate is the world’s largest asset class, globally valued at over $600 trillion, yet much of it still runs on manual labor and outdated processes. The pain is most acute during pre-construction, where developers must navigate high-stakes decisions with fragmented information and little transparency.
+Algoma’s AI-native real estate development platform helps developers turn an address into a deal, accelerating confident decision-making abilities by delivering site feasibility in minutes and at the fraction of the cost as traditional methods.
+The Algoma platform includes:
+- Instant zoning analysis
+- Market intelligence
+- Site-specific design massing
+- Unit mix and layouts
+- Pro-forma generation
+- Visualization for investors and agencies
+Algoma’s founding team blends deep domain expertise across real estate, AI, and strategy:
+- Josef Bromovsky, CEO, has spent his career building technology at some of the world’s largest construction and infrastructure firms, focusing on digitizing early-stage planning and design.
+- Kyle MertensMeyer, Chief Product Officer, is an award-winning design architect and AEC Entrepreneur whose design work spans five continents, focusing on materiality and sustainable systems.
+- Seyfihan Usarer, COO, is a former McKinsey consultant and member of TikTok’s Monetization Strategy Team, with a background in leading digital transformations and scaling digital platforms.
+See their press release here and more in Tech Funding News.

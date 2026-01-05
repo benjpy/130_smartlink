@@ -1,0 +1,14 @@
+Every year, Fast Company’s World Changing Ideas Awards spotlight the startups, researchers, and organizations pushing bold, creative solutions to our planet’s most urgent challenges.
+According to Fast Company, the overarching takeaway this year is that, “yes, the world right now feels very bleak. But read through the winners, and you’ll be inspired by the countless people devoting their lives to making the world more accessible, equitable, and sustainable for everyone—regardless of what the federal government is doing.”
+We’re proud to see two SOSV portfolio companies recognized on this year’s list, both tackling massive, global issues with grit, science, and scalable innovation.
+🧬 Oobli: Turning Sweet Proteins into a Sugar Alternative
+Using precision fermentation, Oobli produces brazzein, a sweet protein found in a rare West African fruit, that can replace up to 90% of sugar in foods and drinks. It’s up to 5,000x sweeter than sugar, doesn’t spike blood sugar, digests like any other protein, and doesn’t have the funky aftertaste of alternative sweeteners. It’s also a win for the planet. For every 1% reduction in sugar production, Oobli’s proteins could help save:
+🌱 525,000 acres of land
+💧 88 billion gallons of water
+🌍 1 million metric tons of CO2
+The FDA reviewed their proteins with no objections, and now global food giants like Grupo Bimbo are preparing to launch products using this breakthrough ingredient.
+📖 Read more in their Fast Company feature here.
+💊 RxAll: Stopping Counterfeit Drugs at the Source
+When co-founder Adebayo Alonge and Amy Kao launched RxAll in 2016, they started with one urgent goal: stop counterfeit medications from harming patients in African countries. Their RxScanner, a handheld AI and light spectroscopy device, helps regulators and pharmacies instantly detect fake drugs. To date, it has removed over 1.3 million counterfeit meds from the supply chain.
+But the team didn’t stop there.
+As adoption grew, RxAll expanded into procurement, demand forecasting, and even pharmacy financing, building a critical infrastructure layer for a fragmented industry. Today, they support 5,000+ independent pharmacies across Nigeria, Kenya, and Uganda, where 95% of pharmacies still rely on pen-and-paper systems.

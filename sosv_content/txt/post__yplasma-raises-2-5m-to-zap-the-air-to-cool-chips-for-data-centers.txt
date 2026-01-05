@@ -1,0 +1,10 @@
+The AI era has brought unprecedented computational power…and with it, unprecedented heat. As chips grow denser and data centers swell, conventional cooling systems are hitting their limits.
+That’s why we’re excited to unveil our portfolio company YPlasma, which recently announced a $2.5M seed round led by Faber, with participation from SOSV to commercialize its solid-state plasma actuator technology – a compact, silent, and energy-efficient alternative to traditional fans and liquid cooling systems.
+With R&D facilities in both HAX’s Newark, NJ location and in Madrid, Spain, the company is a spin-out from INTA, the Spanish Space Agency, and an early partner of the Mobile World Capital Barcelona Foundation.
+YPlasma’s unique plasma actuators generate ionic wind to move heat away from critical components without any moving parts. The result is a fundamentally new approach to thermal management and flow control in high-performance electronics and the semiconductor industry.
+The first commercial integration is expected later this year in consumer electronics, including laptops and similar devices. But the potential doesn’t stop there. YPlasma’s plasma actuator platform has a wide range of high-impact applications across different industries beyond electronics, including:
+- Influence aerodynamics increasing wind power generation or reducing aircraft fuel consumption
+- Generate propulsion using atmospheric gases as propellant for VLEO satellites or drones
+- Disinfect surfaces in controlled environments like vertical farms
+- Activate media to alter material properties producing plasma activated water with better cooling capacity
+YPlasma was founded in 2023 by David García, a serial entrepreneur with a background in energy efficiency and holds an MBA and a degree in Industrial Engineering from the Barcelona School of Industrial Engineering, and previously co-founded multiple ventures bridging industrial science and real-world impact. With YPlasma, he’s turning space-grade physics into a platform for next-gen cooling and beyond.

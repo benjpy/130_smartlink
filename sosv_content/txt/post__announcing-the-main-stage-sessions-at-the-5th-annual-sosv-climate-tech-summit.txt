@@ -1,0 +1,120 @@
+We’re excited to announce the 19 main stage sessions for the 5th annual SOSV Climate Tech Summit, taking place November 3–7, 2025.
+We’ll explore how deep tech founders are turning scientific breakthroughs into scalable climate solutions, and how investors are navigating today’s political and funding headwinds to keep the transition moving forward. Sessions will also tackle some of the biggest system-level questions in climate tech today:
+- Can the U.S. maintain momentum as IRA incentives fade?
+- How do we power the AI and data center boom?
+- What does China’s energy dominance really look like and how can the U.S. keep up?
+- What do investors need to see to back the next wave of decarb technologies?
+Whether you’re a founder looking for insights on scaling hardware or an investor scanning the frontier of deep tech, this year’s conversations offer a clear-eyed view of what’s working, what’s not, and what comes next for climate innovation.
+See the lineup below below and start building your plan for the week.
+Climate Tech USA 2025: What Just Happened?
+Only in America. We swung from an administration ready to pay nearly any price to decarbonize the U.S. industrial base to one that characterizes the vast ambition as a “hoax.” The pullback of IRA credits and DoE grants and loans will derail countless climate projects, even though in a precious few categories, like nuclear and geothermal, it’s still full ahead. In the meantime, China is flooding emerging markets with cheap solar and EVs, Europe’s industries are wobbling due in part to costly premiums priced into their renewable grid, and the earth is heating up faster than ever. Who better to explain the moment than Sightline co-founder Kim Zou, former DoE loan office boss Jigar Shah, and founding director of Columbia’s Center on Global Energy Policy, Jason Bordoff.
+🎤 Speakers:
+- Kim Zou, CEO & Co-Founder, Sightline Climate
+- Jigar Shah, Former Director, DoE Loan Office
+- Jason Bordoff, Founding Director of Columbia’s Center on Global Energy Policy
+- Moderator: Vijay Vaitheeswaran, The Economist
+Vinod Khosla: The Climate OG VC Is Undaunted
+Vinod Khosla never walked away from climate, and doubtless never will. The depth and success of Khosla Ventures’ climate portfolio tells you why. He invested in current powerhouses LanzaTech and Mainspring Energy 15+ years ago, and today the firm is a front runner in many new innovators including Koloma, Commonwealth Fusion Systems and Quaise Energy. Khosla never fails to deliver a fresh and unfiltered take on the investing and climate tech scene.
+🎤 Speakers:
+- Vinod Khosla, Founder, Khosla Ventures
+- Moderator: Julie Bort, TechCrunch
+Mike Schroepfer: From Meta to Climate VC, Two Years In
+The big lesson Mike Schroepfer learned as Meta’s CTO was “technology is the only thing that removes constraints,” and he brought that conviction to climate investing in 2023 with the launch of his personal climate fund Gigascale Capital. In the past two years, Schroepfer has made nearly 40 investments ranging from later stage startups like Commonwealth Fusion Systems to very early ones like carbon removal platform Terradot. Along the way, he launched Carbon to Sea, a $50 million nonprofit effort on ocean alkalinity enhancement (OAE) as a means to sink CO2, and Outlier Projects, which is making grants in three areas: greenhouse gas capture, glaciers stabilization, and solar geoengineering. We’re eager to hear which constraints are bending to technology.
+🎤 Speakers:
+- Mike Schroepfer, Founder & Partner, Gigascale Capital
+- Moderator: James Temple, MIT Tech Review
+Chris Sacca: Why He Is (Still) Betting Big on Climate Tech
+Rock star investor Chris Sacca jumped into climate investing in 2018 with the launch of Lowercarbon Capital and a rallying call to “unf**k the planet”. More than 200 investments later, Lowercarbon has become a force in climate tech investing, with deep moves in many categories, including fusion energy and carbon capture, and one of the deepest teams of technical experts in venture. Despite the downturn in climate investing, Sacca will argue climate tech is more compelling than ever.
+🎤 Speakers:
+- Chris Sacca, Managing Partner, Lowercarbon Capital
+- Moderator: Eric Newcomer, Newcomer Media
+David Keith: How and When Will Carbon Removal Make Sense?
+David Keith is a unique figure in climate tech. The University of Chicago professor is a leading researcher in the field of solar geoengineering, and he is also a climate startup veteran who co-founded Carbon Engineering, a CO2 capture company acquired by Occidental Petroleum in 2023. This session will address technology and business of carbon removal, a five-year-old sector that has absorbed $3.6B in investment in the past five years and the IPCC has called “essential” to meet mid-century netzero goals.
+🎤 Speakers:
+- David Keith, Professor, Department of Geophysical Sciences, University of Chicago
+- Moderator: Cat Clifford, Formerly Cipher News
+The Contrarians: New Funds in Climate
+New climate funds are getting rarer than hen’s teeth. As of August, Pitchbook counted just 17 new funds that had raised a total of $2.1B this year, versus the peak 94 new funds in 2022 and peak $10B raised in 2021. In other words, this must be a great time to invest in climate companies, at least that’s what we are likely to hear from these check writers who have closed climate funds in the past year: Sophie Purdom (Planeteer, $54M), Tove Larsson (Norrsken Fund II, Euro 57M), and John Tough (Energize Ventures Fund III, $430M). We could not agree more.
+🎤 Speakers:
+- Sophie Purdom, Partner, Planeteer Capital
+- Tove Larsson, Founding General Partner, Norrsken VC
+- John Tough, Managing Partner, Energize Capital
+- Moderator: Alex Wilhelm, This Week in Startups
+The Data Center Energy Race: Google and Microsoft
+In 2023, U.S. data centers consumed about 176 TWh of electricity, representing 4.4% of U.S. demand. By 2028, this figure is projected to rise to 6.7%–12%, equivalent to the power draw of dozens of nuclear plants. Hyperscalers such as Microsoft and Google are already investing in multi-gigawatt campuses, exploring on-site generation from wind, solar, gas, nuclear, and geothermal, while racing to scale advanced cooling and energy storage. How will Big Tech balance soaring demand with its climate commitments? Microsoft’s Sean James, Sr Director Energy & Data Center Research, and Google’s Lucia Tian, Head of Advanced Energy Technologies, will walk us through how they’re working to secure the energy they need, including partnering with startups on the grid.
+🎤 Speakers:
+- Sean James, Senior Director Energy & Data Center Research, Microsoft
+- Lucia Tian, Head of Advanced Energy Technologies, Google
+- Moderator: Maria Gallucci, Canary Media
+Joby’s eVTOL: From Moonshot to Market
+In pursuit of the dream to build an eVTOL (electric, vertical take-off-and-landing) plane, Joby Aviation raised $803M in venture between 2013-2020 and subsequently $2B more in SPAC and PIPE rounds. Today, Joby is on the verge of offering commercial air taxi services in select metros, has two operational manufacturing plants, in California, and Ohio, and a slew of key strategic investors and partners, ranging from Toyota to the US Department of Defense. Joby’s path to success has many lessons for first-of-a-kind decarbonizing technologies pushing to commercialization. Joby’s Chief Product Officer, Eric Allison, will explain how Joby got here.
+🎤 Speakers:
+- Eric Alliso, Chief Product Officer, Joby Aviation
+- Moderator: Kirtsen Korosec, TechCrunch
+Making Rare Earths Less Rare
+If there’s one thing the Trump administration and the climate tech innovators agree on, it’s the urgent need to shore up U.S. supply chains for rare earth elements and critical minerals. You can’t make magnets, batteries, semi-conductors and countless other industry essentials without them, and yet the U.S. has ceded supply chain dominance to China. The administration urgently aims to fix that with a broad array of policy and economic initiatives, many of which are providing tailwinds to startups with innovative technologies in mining, processing and refining of everything from lithium and copper to neodymium and dysprosium. We’ll hear from two founders in the fray, Still Bright’s Jon Vardner and Phoenix Tailings’ Nicholas Myers, as well as an investor focused on the sector, Orion Industrial Ventures’ Molly Wilkinson.
+🎤 Speakers:
+- Jon Vardner, Co-Founder & CEO, Still Bright
+- Nicholas Myers, Co-founder & CEO, Phoenix Tailings
+- Mollie Wilkinson, Investor, Orion Industrial Ventures
+- Moderator: Doug Wicks, Former Advanced Research Projects Agency-Energy (ARPA-E)
+Tim Latimer: Is Geothermal the Renewable Innovation Edge the U.S. Needs?
+Who would have guessed that oil and gas fracking would give rise to one of the biggest breakthroughs in renewables: advanced geothermal energy. Former fracking engineer Tim Latimer founded Fervo Energy to apply the technology in ways that make geothermal less dependent on hot spots and deep drilling. Hear the back story on how Latimer hit on the idea while he was at Stanford Business School, and what it will take to mainstream advanced geothermal. (Filmed 9/22 live in NYC.)
+🎤 Speakers:
+- Tim Latimer, CEO & Co-Founder, Fervo Energy
+- Moderator: Duncan Turner, SOSV / HAX
+Form Energy Is Ready to Go Big. How Fast Can It Go?
+Mateo Jaramillo’s Form Energy has emerged as the frontrunner in long-duration, grid-scale energy storage thanks to its 100-hour, iron-air battery technology as well as its relentless push to scale. Form has started battery production at its 550,000 sq ft factory in Weirton, West Virginia and last year received a $147 million grant from the U.S. Department of Energy to help finance the world’s largest long duration energy storage (LDES) facility, in Lincoln, Maine, among several other large-scale deployments. Jaramillo has raised $1.4 billion from a who’s who of climate tech investors. We’re eager to hear how he is navigating the shifting sands for renewables and where LDES goes from here.
+🎤 Speakers:
+- Mateo Jaramillo, CEO & Co-Founder, Form Energy
+- Moderator: Julian Spector, Canary Media
+“When the Well Is Dry, We Learn the Worth of Water”
+So said Ben Franklin, who was right: “Water insecurity” is a growing global anxiety, driven in various measures by climate change, ground-water depletion, industrial demands, and pollution. And as the price of water rises, new technologies are entering the market to help fill the gap between price and availability. The Summit’s first ever session on water focuses on three technologies in very distinctive markets: Craig Kasberg’s Tidal Vision is scaling chitosan-based treatment to clean water at scale, Robert Bergstrom’s OceanWell is using deep sea technology to deliver desalinated seawater with much reduced energy, and Brian Sheng’s Aquaria is pulling water from air to deliver independence from water utilities.
+🎤 Speakers:
+- Craig Kasberg, CEO & Co-Founder, Tidal Vision
+- Robert Bergstrom, CEO, OceanWell
+- Brian Sheng, CEO & Co-Founder, Aquaria
+- Moderator: Candice Ammori, Climate Vine
+Can We Teach the Old Electricity Grid New Tricks?
+Electricity grids worldwide are straining under the demands of vast new data centers, electrification, and aging infrastructure. This panel brings together technology pioneers whose aim is to modernize and build out grids before they collapse. Timothy Heidel, co-founder of VEIR, is developing superconducting power lines that carry 5–10× more power than conventional ones. Drew Baglino, founder of Heron Power, drew on his decade at Tesla to pioneer distributed storage and backup systems. Anirudh Reddy, CEO of Ayr Energy, is speeding up the design and manufacture of critical power grid equipment. Can better technology help grids leapfrog out of obsolescence?
+🎤 Speakers:
+- Timothy Heidel, CEO & Co-Founder of VEIR
+- Drew Baglino, CEO & Founder of Heron Power
+- Anirudh Reddy, CEO, Ayr Energy
+- Moderator: Julia Atwood, Sightline Climate
+Greener Cement Chemistries: “Goodbye” Limestone & “Hello” Steel Slag
+Cement production is the third largest source of man-made CO2 emissions, and dozens of startups have chased new technologies to solve for one or both of cement’s dual emission sources: energy consumption and the chemical process of calcination. At Brimstone, CEO Cody Fink and team have all but eliminated the latter source by switching from limestone as the basis for calcination to calcium-bearing alternatives, such as basalt, wollastonite, and a process that eliminates CO2 emissions but yields conventional Portland cement. At Cocoon, co-founder Will Knapp leads an effort to turn steel slag, a waste product from steel mills, into material for cement production, a form of industrial circular waste valorization. Getting to market is the thing.
+🎤 Speakers:
+- Cody Fink, CEO & Co-Founder, Brimstone
+- Will Knapp, Co-Founder, Cocoon
+- Moderator: Katie Fehrenbacher, Axios
+You Know There’s a Fourth State of Matter, Right?
+Plasma is the fourth state of matter, and most of the universe is made up of it, but on planet earth we’re just beginning to figure out its applications. If fusion energy ever takes off, for example, plasma tech will be at the core, and semi-conductor manufacturers use plasma to etch the finest circuits. David Garcia, CEO of YPlasma, is developing plasma actuators to enable precise control of ionic “wind” from solid state devices. Emily Carter, Senior Strategic Advisor, Princeton Plasma Physics Laboratory (PPPL), and Scott Hsu, Plasma Partner at Lowercarbon Capital, are at the forefront of research efforts. You’ll hear about that and the new HAX Plasma Forge, a joining project between SOSV and PPPL to translate plasma science into hardware, decarbonization, and next-gen manufacturing.
+🎤 Speakers:
+- Emily Carter, Senior Strategic Advisor, Princeton Plasma Physics Laboratory (PPPL)
+- Scott Hsu, Fusion Partner, Lowercarbon Capital
+- David Garcia, CEO & Co-Founder, YPlasma
+- Moderator: Duncan Turner, SOSV / HAX
+Doomberg: Critiquing the “Energy Transition”
+An anonymous collection of veterans from energy industry, hard science and finance produce Doomberg, a media project dedicated to “lateral thinking” in energy, finance and geopolitics. They are the most widely read finance newsletter on Substack, and the little green bird is their moniker. Doomberg’s relentless, expert focus on market, industry and geopolitical realities often cuts across the grain of conventional thinking, especially on the “energy transition.” While some quarters may be trying to ban open discourse, we love a good argument. Expect a lively exchange.
+🎤 Speakers:
+- Doomberg, Author, Doomberg Substack
+- Moderator: Danny Crichton, Lux Capital
+What Can China’s “Engineering State” Teach the West About Balancing Energy Abundance and Decarbonization?
+In his riveting new book “Breakneck: China’s Quest to Engineer the Future,” Dan Wang portrays China as an “engineering state” that single-mindledly pursues giant infrastructure projects, energy independence and abundance not the least. That accounts for China’s heavy reliance on domestic coal for energy as well as its record deployments of solar, wind, hydro and nuclear, to expand its grid at a stunning pace. What lessons should the “lawyerly society,” as Wang describes the United States, take from China’s pragmatic efforts to build a grid that treats renewables as a cost-effective component in a strategy that values decarbonization but puts energy independence and growth first.
+🎤 Speakers:
+- Dan Wang, Research Fellow, Hoover History Lab, Stanford University
+- Moderator: Akshat Rathi, Bloomberg
+Is Blue the New Green?
+Are we being too purist in evaluating clean tech? When is it a better investment to fund a partial solution, if it’s more economical? “We’ll need no green premium,” investors have repeatedly been promised. But it rarely proves true. Did EU Article 9 funds distort the market towards startups that maximize theoretical emissions reduction, rather than maximizing the odds of success? Does having strict criteria for GHG emissions reduction really make sense any more?
+Inspired by the many shades of hydrogen, this panel will explore these tradeoffs. Is biology really better than chemistry, if it’s a green chemistry? Is using land to grow food and industrial products really that bad? Does everything have to be monitored and measured that closely?
+SOSV general partner Po Bronson, OzoneBio co-founder Khorcheska Batyrova, and Chevron’s Sindhu Balan tackle that one from their standpoints as VC, climate tech founder, and hydrocarbon corporate investor.
+🎤 Speakers:
+- Po Bronson, General Partner, SOSV
+- Khorcheska Batyrova, CEO, Ozonebio
+- Sindhu Balan, Investor, Chevron
+Mainspring Energy: The Linear Generator Moment
+Founded fifteen years ago as a Stanford spinout, Mainspring has raised $850 million to commercialize a linear generator that produces no emissions, burns almost any gaseous fuel, including natural gas, ammonia, and H2, and can switch easily from one fuel source to another. Those features and a welcome ITC extension for linear generators in the OBBBA position Mainspring as well as electricity demand on the grid surges thanks to the data center boom and other factors. Mainspring CEO and co-founder Dr. Shannon Miller will cover the lessons learned over those 15 years and unpack the exciting developments in 2025.
+🎤 Speakers:
+- Dr. Shannon Miller, CEO & Co-Founder, Mainspring Energy
+- Moderator: Matthew Zeitlin, Heatmap

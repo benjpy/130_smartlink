@@ -1,0 +1,9 @@
+Big milestone for manufacturing automation: Q5D, a graduate of our HAX hard tech startup development program has raised $13.5M, which includes a $10.9M Series A co-led by Lockheed Martin Ventures, Chrysalix and Maven SWIF, with other investment from SOSV, UKI2S, UntroD and CPI Enterprises as well as a $2.6M grant from Innovate UK.
+Q5D is tackling one of the most persistent bottlenecks in modern manufacturing: the manual assembly of wiring harnesses. Still done by hand in industries like automotive, aerospace, and consumer electronics, this labor-intensive process is costly, error-prone, and often offshored to low-wage countries.
+To solve this, Q5D has built a 5-axis manufacturing robot that produces parts on demand and automates embedding wiring directly into the structure of a product.
+🌍 The impact:
+▪️ Reduces wiring cost by up to $200 per compact vehicle
+▪️ Eliminates harness inventory & simplifies logistics
+▪️ Improves reliability, reduces weight & reshapes supply chain risk
+This funding will support commercial pilots, team growth, and the build-out of additional manufacturing capacity as Q5D moves toward full-scale deployment with leading industrial partners. Q5D expects to raise a further corporate investment round later this year.
+Congrats to CEO Steve Bennington and the entire Q5D team on one more step toward reshoring advanced manufacturing and electrification!

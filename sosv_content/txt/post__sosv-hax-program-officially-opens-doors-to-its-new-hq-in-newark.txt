@@ -1,0 +1,75 @@
+When you walk through HAX’s glass doors at 2 Cedar Street in Newark, New Jersey, a giant orange robot arm greets you, perched over a massive installation where Silana’s founders are working on automated robotic sewing machines.
+Steps away, you’ll find a team working on a process that turns industrial waste into sustainable cement — all while capturing CO2 (Cocoon Carbon); another few steps will take you to a founder developing an electrochemical technology to enable the rapid, clean, and complete recovery of copper (Still Bright). The projects underway at HAX only get more interesting from there.
+But today, everyone put down the tools to mark the grand opening of HAX, which included New Jersey Governor Phil Murphy, Newark Mayor Ras J. Baraka, and New Jersey Economic Development Authority CEO Tim Sullivan. The NJEDA made the HAX facility possible by committing $25 million over five years; in exchange, HAX and its parent venture fund SOSV aim to launch 100 companies from HAX’s facility and eventually create thousands of jobs in New Jersey.
+Newark really has it all. We have truly exceptional universities with academic departments that are developing IP and talent that will shape the world for generations to come. And we are a train ride away from two of the best sources of venture capital in the world.
+HAX is making good on its ambitions. In the 2.5 years since its launch in New Jersey — working out of a temporary Newark space — HAX has brought over 40 companies to Newark and created over 110 jobs. Those 40 companies have raised over $40M of additional capital. HAX also partners with local universities like Rutgers, NJIT, and Princeton, leveraging their expertise and lab space, as well as working closely with students who might one day be HAX founders.
+“When we set out to find a new headquarters for HAX in the US, we were looking for an ecosystem that could be the birthplace of the re-industrialisation of the US,” said Duncan Turner, HAX’s managing director and a general partner at SOSV. “We wanted world-class talent close to some of the largest industries in the world where we would have an industrial heritage and infrastructure ready to support our companies’ expansions. Newark really has it all. We have truly exceptional universities with academic departments that are developing IP and talent that will shape the world for generations to come. And we are a train ride away from 2 of the best sources of venture capital in the world. This is a truly unique place.”
+As you make your way through the sprawling, open industrial space that HAX now calls home, you’ll encounter a mix of technical founders hard at work on deep technologies ranging from climate to industrial innovation to health.
+The new 35,000 square foot facility is full of light, cheerful conversation, and the “music” of industrial grinders, buzz saws, clattering wrenches, and whirring machines. HAX is designed to be a hard tech founder’s dream: the space features a multi-million dollar investment in chemical, mechanical and electrical engineering labs, a wide array of industrial 3D printers, metal fabrication facilities, CNC machining, laser cutting, welding and plasma cutting, metrology, and more. (Check out the full spec below!)
+Right now, there are 25 hard tech teams living this dream and working out of the space—and more on the way. The expansive facility boasts enough room to host 40 teams in total, including current HAX founders and alumni.
+The global vibe among the teams is hard to miss. Nine of the teams on-site relocated to Newark from abroad in search of the perfect place to build and de-risk their hard tech innovations. Founders from Austria, India, Russia, Canada, and the UK are now calling Newark home.
+Each founder has different requirements, and HAX is nothing if not quick to adjust. Take a service elevator to the basement, and you’ll find a giant kiddie pool, or “simulated lithium pond,” for PureLi created to test retrieval of their lithium extraction devices from ponds.
+HAX prides itself on helping founders move very fast through the early stages of product development. They rely on a 1-2 punch of in-house engineering and design expertise combined with offshore supply chain and engineering experts at offices in Pune and Shenzhen, enabling a low-cost, 24/7 work cycle.
+“When we decided to build our headquarters in the US, we thought first, ‘how do we help companies with chemistry as core to what they do?” says HAX managing director Turner. “We decided to build a chem lab, because they are really hard to come by for startups. Second, we decided to think about fabrication in a way that sourced components outside but adjusted them in house with the help of mechatronics and control system engineers, instead of doing everything ourselves. That really speeds up development.”
+Leading HAX (and working on-site with founders every day) are Duncan Turner, HAX MD & SOSV GP; Dr. Susan Schofer, HAX Chief Science Officer and SOSV Partner; Ji Ke, HAX Chief Technology Officer, and Andy Gollach, SOSV Partner.
+HAX’s footprint in Newark represents a strategic bridge between the city’s industrial past and its innovation-focused future. While many of the HAX Newark startups are still young, they have the potential to further leverage New Jersey’s industrial base, infrastructure assets, rich corporate landscape, local talent, and research universities to create a powerful and unique startup ecosystem.
+“This hard tech hub is going to be transformative. It already is,” said Governor Phil Murphy during his remarks at the grand opening. “We wear [HAX’s] presence here as a badge of honor, and the good news is: this is tangible. You can touch it. You’ve got a great operation here. But, without question, the best, big booming days are still in the future. We’re not putting a bow around something that has taken place. This is a start, and it’s the start of something really, really big.”
+HAX is building category-defining deep tech companies that will put New Jersey on the global map as a leader in entrepreneurship, sustainability, and diverse economic opportunity, all starting from Newark.
+List of HAX equipment & machinery
+CNC Machines
+- Tormach 1100MX VMC (Coming Soon!)
+- Tormach 1100MX VMC (Coming Soon!)
+- Tormach 15L Slant-Pro Lathe (Coming Soon!)
+- Tormach 1300L Plasma Table (Coming Soon!)
+- Tormach 24R CNC Router Table (Coming Soon!)
+- Wazer Waterjet
+Basic Metalworking
+- Bridgeport Series 1 Milling Machine
+- Ganesh 1640S Engine Lathe
+- DoAll 20” Vertical Bandsaw
+- Jet 8”x14” Horizontal Bandsaw
+- Jet 8” Pedestal Grinder
+- Powermatic 18” Drill Press
+- Jet 48”x6” Belt/Disk Sander
+- Fein 12” Cold Cut Saw
+- Dayton 12” Disk Sander
+- Bauer 8” Polisher and Buffer
+- Vibratory Tumbler 12”
+3D Printing
+- (3x) Formlabs Form 3+
+- (2x) Formlabs Form 3L
+- Formlabs Form 3B+
+- Formlabs Fuse 1+ 30W
+- (2x) Bambu Labs P1S
+- (4x) Bambu Labs A1 (Coming Soon!)
+- Modix Big Meter
+Welding and Plasma Cutting
+- Mig Welder
+- Tig Welder
+- Plasma Cutter
+Laser Cutting
+- Omtech 2440-100w
+Metrology
+- 12”x18” Surface Plate
+- Digital Height Gauge
+- Gauge Pins .011” – .625”
+- Gauge Blocks .100” – 4”
+- Micrometers 0” – 6”
+- Calipers 6” & 12”
+Chemical Wet Lab Capabilities
+- Nine chemical fume hoods within approx 2700 sq ft wet lab
+- Five hoods are contained in individualized, private lab rooms, with bench & storage space
+- Four hoods are walk-in for teams to carry out scale-up work
+- Internal analytical lab with capabilities for small molecules, materials & polymers, electrochemical and mechanical testing equipment
+- On-site lab manager with Environmental, Health, and Safety expertise to support SOP development and safe operations
+- Potable & deionized, purified water
+- Hazardous waste collection
+- House nitrogen gas & compressed air plumbed into hoods
+- Options for range of additional gases – high pressure N2, Ar, CO2, H2, CO, CH4, ethylene, etc.
+- Cold (fridge & freezer) and chemical storage spaces
+- Clean bench spaces available
+- Wet ice, dry ice, and liquid nitrogen
+- Glove box for inert atmosphere work
+- Vacuum ovens
+- Ovens & furnaces for high temperature work
+- Set up for work with wide range of reactive chemicals – strong acids, strong bases, pyrophorics, etc.

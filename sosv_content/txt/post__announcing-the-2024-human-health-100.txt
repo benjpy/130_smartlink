@@ -1,0 +1,34 @@
+Welcome to the third annual SOSV Human Health 100. The list features SOSV’s 100 most exciting companies in the health category, which for SOSV ranges very widely, from assistive robotics and remote care to therapeutics and diagnostics.
+In the past two years (see the 2023 and 2022 lists), venture rounds and company valuations grew strongly, but in the past year funding has become much harder to secure and valuations are fragile at best. We asked founders in our recently concluded and very well attended VC-Founder Health Matchup (more on that below) what they thought of the funding environment: 71% reported that it was worse than prior years; no respondent reported it was better.
+We see that trend in our Health 100. As in past years, about 2/3 of the companies are at the seed stage, 1/3 at Series A or more, and 2 have reached ‘Late stage’ (unicorns Opentrons and Formlabs). Compared to the strong numbers the Health 100 posted in the past two years, growth was modest. The Health 100’s aggregate valuation is $6.67 billion (+3% from $5.47B in 2023), and all told the Health 100 have raised $1.43 billion (+1% from $1.42B in 2023).
+SOSV, which invests starting at pre-seed and continues through later stages, has invested $99 million (+3% from $96M in 2023) in the 100. Due to the slowdown in follow-on investing last year, SOSV’s investments were mostly in new companies entering our programs or raising seed rounds.
+Progress of the Health 100 – 2022-2024
+Note: this table is based on actual funding amounts.
+This year’s list welcomes 16 newcomers, who are listed below. Individual companies on the Health 100 experience ups and downs due to new fundings, regulatory breakthroughs and commercial partnerships. Joining or leaving this list is not a reliable indicator of future outcomes!
+The Health 100 Founders
+As with the SOSV Climate Tech 100, the diversity and sophistication of our health companies and founders is striking.
+- 35% of the companies have at least one woman co-founder.
+- 16 countries are represented; topping the list are the US (64), the UK (9) and Canada (6), followed by France, Ireland and Singapore (3).
+- 70% of the startups have at least one PhD co-founder.
+A total of 52 companies graduated from the bio-focused IndieBio while another 38 hail from hard-tech focused HAX, and five came from the SOSV Consortium.
+SOSV is continually expanding its health portfolio by accepting pre-seed health startups into our HAX and IndieBio startup development programs with checks ranging from $250,000 to $500,000. As the companies progress, SOSV also participates in their series seed, A and later rounds. That helps account for our strong showing in PitchBook leaderboards for active investors in categories such as healthcare devices & supplies, women’s health, pharma and biotech.
+The 16 New Health 100
+All the new companies in the Health 100 are at the seed stage; 9 of them were founded in 2020 or later.
+- Afynia (Canada): The first diagnostic blood test for Endometriosis
+- Cell Bioengines (US): ‘Off-the-Shelf’ Cell Therapies to Cure Cancer.
+- DropGenie (Canada): Accelerating the pace of drug discovery through automated gene editing workflows
+- HelEx (US): Re-shaping gene editing drug design by leveraging nature’s own operating system- the epigenome,
+- Kinexcs (Singapore): AI-driven digital therapy platform & wearables empowering recovery and mobility
+- LightHearted AI (UK): AI-based diagnostics device offering faster, accurate, and affordable solutions for the detection of heart conditions.
+- MedIQ (Pakistan): Integrated virtual care platform providing on-demand healthcare at the point of need.
+- Neuroqore (US): Developing neuromodulation treatments for various neurobehavioral conditions using rTMS (Repetitive Transcranial Magnetic Stimulation)
+- Oli Technologies (US): Helping kidney disease patients see better outcomes at lower costs via portable dialysis devices.
+- OpenShelf (US): Provides flexible “vending machine”-like robots that manage inventory for thousands of unique contact lenses.
+- Portable Diagnostic Systems (US): Microfluidics-based drug testing platform for law enforcement.
+- Rizlab Health Diagnostics (US): A handheld device that allows clinicians to test patient white-blood cell counts in minutes.
+- TippingPoint (US): Attacking cancer with a platform that makes genome packaging states druggable.
+- Unlocked Labs (US): Probiotics with an enhanced ability to biodegrade toxins that are the root causes of serious chronic conditions.
+- ViAn Therapeutics (US): Ophthalmology pharma startup combating microvascular retinal diseases (AMD and DME) with a simple eye drop.
+- Vitarka Therapeutics (UK): Developing RNAi therapies and a non-viral delivery platform technology to activate the immune system and normalize tumor vasculature
+The VC-Founder Health Tech Matchup
+The health category may be little better than flat year-on-year, but SOSV’s second annual VC-Founder Health Tech Matchup, produced results consistent with a very vibrant category. There were 1092 participants (416 investors and 676 founders) for the free, online event, which took place over the past two weeks, and those folks took approximately 1,500 founder-investor meetings. Year-on-year, matchup registrations were up 52% and meetings up 134%. Some of that energy may derive from the wave of AI-based technologies moving through the health sector: 63% of founders reported that AI was now playing a significant role in their work.

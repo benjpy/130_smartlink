@@ -1,0 +1,33 @@
+More than 2,000 startups applied to compete in the storied TechCrunch Disrupt Startup Battlefield, the most prestigious startup competition in the world. The event just took place in San Francisco on Oct. 18–20, and SOSV’s portfolio was richly represented.
+TechCrunch chooses 200 startups to join Disrupt as exhibitors in the Startup Battlefield 200. Twenty of those go on to compete in the Battlefield finals pitch competition judged by top VCs in front of a vast in-person and online audience. The winner takes away the $100,000 top prize and the famed “Disrupt Cup.”
+Eleven SOSV portfolio companies made the cut for the 200, and two of those, Nat4Bio, which makes edible food coverings that reduce waste, and Swap Robotics, which makes autonomous, solar-powered mowers, joined the 20 that competed on stage. Swap made it to the final five. The winner was not an SOSV company but the judges gave the Disrupt Cup to the truly remarkable Minerva Lithium, which extracts lithium from briny water.
+Here is the complete list of SOSV companies (seven from HAX; four from IndieBio) that TechCrunch invited to join the Battlefield.
+Artyc (HAX 2022): San Francisco, California
+Arctyc aims to decarbonize cold chain logistics with refrigerant-free, reusable cooling containers powered by batteries. An accompanying app allows users to track their products’ performance, create custom reports, and manage inventory throughout a product’s lifecycle.
+Neurode (HAX 2021): Sydney, Australia
+The Neurode Wave is a wearable headset that pairs with an app to improve symptoms of ADHD like impulse control, attention, and working memory. It is the only ADHD treatment that allows users to quantitatively measure symptoms and track improvements over time.
+Allozymes (HAX 2019): Singapore, Singapore
+Allozymes is building a platform for fast and affordable enzyme development. Using microfluidics, Allozymes has compiled the world’s largest enzyme data set, enabling it to build and test millions of enzymes per day. Allozymes’ platform boosts the likelihood of successfully developing the most effective enzymes by 200x.
+Gaia AI (HAX 2022): Boston, Massachusetts
+Spun out of MIT and Harvard, Gaia AI combines drones, LiDAR, and computer vision to collect high-quality biomass data in forests. By accurately measuring the carbon content of a forest, land owners, project developers, and investors can better understand the carbon stock and timber content of their land and unlock the carbon credit market.
+Pact (HAX 2020): Boston, Massachusetts
+Pact is developing hardware and software solutions personalized to individual athletes to help them recover more quickly. Pact Sense is a sensor-based muscle scanner that scans a users’ muscles, determines their condition, and creates customized warm up or recovery sessions via the Pact Mobile App.
+Lura Health (HAX 2019): Cambridge, Massachusetts
+Lura Health has produced the first wearable sensor for salivary diagnostics. Worn comfortably as a smart retainer, smart band, or smart bracket on the teeth or a single tooth, the device continually monitors saliva in real-time and sends data to a mobile app, where patients and their physicians can analyze long-term data and devise a personalized health strategy.
+Swap Robotics (HAX 2022): Ontario, Canada
+Swap Robotics creates fully-electric robots for nearly around-the-clock solar vegetation cuts and snow plowing. The robots have built-in hydraulics to move the grass cutting blades and the snow plow attachment and use a “quick swap” system to switch attachments.
+Pheronym (IndieBio SF 05): San Francisco, California
+Pheronym taps into a water-soluble pheromone to manage nematodes, a microscopic roundworm, for environmentally-friendly pest control in agricultural soil. Pheronym controls both beneficial nematodes that feed on insects and harmful nematodes that kill plant roots.
+Nat4Bio (IndieBio NY 04): San Miguel de Tucumán, Argentina
+Nat4Bio develops naturally-sourced and zero-residue coatings that protect fruit from spoilage. In an effort to replace the waxes and chemical fungicides currently used to prolong the shelf life of produce, Na4Bio leverages microbial fermentation of bacteria and fungi to produce edible coatings.
+ArgenTAG (IndieBio NY 04): New York, New York
+ArgenTAG lays claim to the first scalable single-cell solution for long-read sequencers. By performing single-cell sequencing on more affordable third-generation long-read DNA sequencers, ArgenTAG hopes to democratize single-cell sequencing, which has historically been confined to well-funded laboratories.
+Sundial Foods (IndieBio SF 11): Albany, California
+Sundial Foods employs an innovative protein-structuring technique to create a delicious, high-protein, and minimally-processed meat alternative. Sundial Wings leave out gums and fillers while still maintaining the crispy skin and the meaty texture consumers expect from real chicken wings.
+As one of the 20 companies to present on the Disrupt stage, Nat4Bio co-founder and CEO Joaquin Fisch showed off the company’s food-grade coating for citrus fruits, explaining the main compounds in the coating.
+Nat4Bio modifies microorganisms to create edible, residue-free coatings applied on the surface of fresh fruit to prevent spoilage. “The first main compound is glucose-based polymer,” Fisch explained. “It’s combined with other food-grade excipients in a very small quantity. Those excipients are meant to provide the formulation-desired mechanical properties, such as viscosity, adherence and elasticity of the film.” Here is the pitch Fisch made on stage to the Battlefield judges.
+Swap Robotics CEO Tim Lichti also took the stage to present how the Ontario, Canada-based company manufactures electric grass-cutting and snow removal robots. Lichti explained to TechCrunch in an interview that current vegetation cutting practices in solar fields are unsustainable.
+“It’s done by gasoline or diesel-powered equipment, so there’s obviously a big carbon footprint there,” he said. “There’s also a high cost from gasoline and diesel itself. The equipment is also going through rough terrain, so there’s a lot of equipment breakdown and costs associated with that.”
+Lichti remarked, “Since what we’re doing is 100% electric, it’s a lot more sustainable. There are also way fewer parts, so it’s not going to break down nearly as often.”
+Swap Robotics moved forward in the competition as one of the five finalists of Startup Battlefield. Here’s Lichti’s pitch on stage to the Battlefield judges.
+Congratulations again to the winner of Startup Battlefield at Disrupt 2022, Minerva Lithium, We expect to hear much more about Minerva and all the companies in the Battlefield 200.

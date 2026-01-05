@@ -1,0 +1,42 @@
+We’re excited to announce the first tranche of breakout sessions at the SOSV Climate Tech Summit. Alongside our main stage programming (full agenda coming soon!), these interactive sessions are designed to dive deeper into the most urgent challenges and opportunities facing climate tech founders, investors, and policymakers.
+This year’s lineup highlights practical lessons, founder stories, and emerging categories across the ecosystem – from scaling first-of-a-kind technologies to navigating exits and understanding the risks of oversized capital rounds.
+These are just the first of many breakout sessions we’ll be announcing in the weeks ahead.
+👉 Register for each breakout individually to save your spot!
+Vibe Coding in the World of Atoms
+Monday, November 3 at 10:00 am PT
+Presented by Pale Blue Dot
+Sometimes the biggest wins aren’t from breakthrough tech, but from simple, practical apps that connect people in the physical world. This session will talk through how replacing clunky internal processes and tools with streamlined solutions can unlock more efficient and cost-effective outcomes in industries that have long been stuck with the status quo.
+Speaker: Hampus Jakobsson, General Partner, Pale Blue Dot
+Who Buys the Future? Exits in Climate Tech
+Monday, November 3 at 5:00 pm PT
+Presented by SOSV
+Even from the earliest stages of a startup’s development, it’s important for founders to keep possible exits in view and to prepare accordingly. SOSV’s resident exit expert, general partner Cyril Ebersweiler, will present a 30-minute primer on exits specific to climate tech followed by 30 minutes of audience Q&A.
+Speaker: Cyril Ebersweiler, General Partner, SOSV and Managing Director, HAX
+Challenges and Successes in FOAK Funding & Scaling Climate Tech Globally
+Tuesday, November 4 at 10:00 am PT
+Presented by Khosla Ventures
+Climate tech startups face some of the toughest funding hurdles, especially when building “first-of-a-kind” projects and scaling breakthrough technologies. In this session, Rajesh Swaminathan, partner at Khosla Ventures, will dive into how three pioneering founders have addressed these challenges: LanzaTech (carbon recycling, $1.3B in total funding), Fortera (low-carbon cement, $175.5M in total funding) and Mazama Energy (geothermal, $20M in total funding).
+Speakers:
+- Rajesh Swaminathan, Partner, Khosla Ventures
+- Jennifer Holmgren, CEO, LanzaTech
+- Ryan Gilliam, CEO & Founder, Fortera
+- Sriram Vasantharajan, CEO, Mazama Energy
+Why Climate-Tech Startups Need Techno-Economic Analysis
+Tuesday, November 4 at 1:00 pm PT
+Presented by Energy Impact Partners (EIP)
+This session will dive into the dos and don’ts of techno-economic analysis (TEA), the power of simple models, and practical advice for startups. Dr. Melissa Ball, associate director of technology at EIP, whose work focuses on technical diligence for deep decarbonization, will give a brief presentation followed by audience Q&A.
+Speaker: Dr. Melissa Ball, Associate Director of Technology at EIP
+Commercializing the Difficult: Lessons from Carbon Tech Founders
+Tuesday, November 4 at 11:00 am PT
+Presented by Activate NY
+What does it take to commercialize technology that the world once thought impossible? Co-founder of Twelve and interim managing director of Activate NY, Etosha Cave has seen how climate founders turn cutting-edge science into scalable businesses firsthand. This session will unpack real-world lessons from carbon tech: aligning science and markets, building credibility with investors, and seizing opportunities where climate urgency meets global demand.
+Speaker: Etosha Cave, Managing Director, Activate NY
+The Journey of an Electron: Deep Tech Opportunities in a Dynamic Energy Landscape
+Tuesday, November 4 at 12:00 pm PT
+Presented by TDK Ventures
+How electrons are generated, stored, utilized, and optimized will define the future of energy. The conversation will follow “the journey of an electron,” tracing its path from generation to utilization and beyond. TDK Ventures’ global investment team will share insights on emerging trends across low-carbon generation, storage, data centers and compute, spotlighting promising startups and iconic entrepreneurs building the next generation of energy leaders.
+Speakers:
+- Adam Erlichman, Investment Analyst, TDK Ventures
+- Ankur Saxena, Investment Director, TDK Ventures
+- Josh Rubnitz, Investment Analyst, TDK Ventures
+- Katherine He, Senior Investment Associate, TDK Ventures

@@ -1,0 +1,14 @@
+SOSV has deeply resourced facilities in San Francisco, New York City and Newark, NJ, designed and staffed to help deep tech builders get to the next level, whether that’s a robot that cleans tankers hulls (Neptune Robotics), a drug discovery platform that uses AI (Ten63 Therapeutics) or bioreactors that make methanol from methane (CarbonBridge).
+What do we mean by “deeply resourced?” Here’s a peek at some of the mad science machines available to our founders at the Analytics Lab in Newark, where our hard tech HAX program is based. In the video, HAX Chief Science Officer Susan Schofer, PhD gives SOSV founder Sean O’Sullivan a tour of the analytics lab, just one of several labs at the location.
+If you know what a gas chromatogram or thermogravimetric analyzer is, this for you. As Schofer says in the video, “This is the place where a lot of magic happens. The analytics lab is where [our startups] come to actually figure out what they’ve made, how much of it they’ve made, how good is it.”
+Whether you need to do thermal analysis and characterization of materials with the thermogravimetric analyzer or differential scanning calorimeter, or you’re a critical minerals company in need of the x-ray fluorescence analyzer, or you need to do PFAS characterization to a parts-per-trillion scale via high pressure liquid chromatography, the HAX Analytics Lab has you covered.
+(And if you don’t know what HAX is, check out the This Is HAX video.)
+Metrology equipment in the HAX Analytics Lab includes:
+- Gas Chromatrogram with Mass Spectrometer (GC-MS)
+- Thermogravimetric Analyzer (TGA)
+- Differential Scanning Calorimeter (DSC)
+- High Pressure Liquid Chromatography (HPLC)
+- Scanning Electron Microscope (SEM) and other microscopy
+- X-Ray Fluoresence Analyzer (XRF)
+- FTIR Infrared Spectroscopy
+- And a partridge in a pear tree. Okay not that one.

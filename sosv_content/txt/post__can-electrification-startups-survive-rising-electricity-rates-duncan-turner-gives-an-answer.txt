@@ -1,0 +1,4 @@
+Soaring electricity prices are creating real headwinds for electrification-driven climate technologies…but the story isn’t one-size-fits-all. As Heatmap News reports the impact varies widely by sector, region, and technical pathway. SOSV GP Duncan Turner points out in the article, rising power prices will also create winners, especially among companies building:
+- Energy efficiency tech (HVAC, chemical separations, data center cooling, low-power photonics, plasma-based cooling)
+- Long-duration energy storage
+- Point-source carbon capture, offering a faster route to cleaner, cheaper electricity on the grid
