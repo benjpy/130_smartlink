@@ -459,8 +459,17 @@ def call_llm_autolink(draft: str, phrases: list):
         "phrases": phrases,
         "rules": {
             "max_links": MAX_LINKS_TOTAL,
-            "strategy": "Your Goal: Link entity names to their Best Match URL from the Candidates. \n1. REQUIRED: If a candidate has 'matched_via', you MUST link it. \n2. Even if the text is 'Samphire' and the URL is '.../samphire-neuroscience/', LINK IT. \n3. Prefer Companies over Posts.",
-            "output_format": [{"anchor": "exact literal substring from text", "url": "target url"}]
+            "strategy": """
+            1. LINK ALL 'matched_via' CANDIDATES. These are pre-verified. Ignoring them is an error.
+            2. ANCHOR TEXT MUST BE THE FULL NAME. 
+               - BAD: <a...>Neuroscience</a>
+               - GOOD: <a...>Flow Neuroscience</a>
+               - BAD: <a...>Canyon</a> Energy
+               - GOOD: <a...>Canyon Energy</a>
+            3. Link "Canyon Energy" to "Canyon Magnet" if suggested.
+            4. Link "Samphire" to "Samphire Neuroscience" if suggested.
+            """,
+            "output_format": [{"anchor": "FULL matched string from text", "url": "target url"}]
         }
     }
 
@@ -632,8 +641,36 @@ def run_autolink_process(draft, mat, meta):
         st.write("🔗 Generating Links...")
         resp, usage_link = call_llm_autolink(draft, phrases)
         
-        # 5. Apply
-        final_html = apply_insertions(draft, resp.get("insertions", []))
+        insertions = resp.get("insertions", [])
+        
+        # 5. POST-PROCESS: Force Fallback Links
+        # If the LLM missed a "forced" match (Strong Match), add it manually.
+        llm_urls = {ins.get("url") for ins in insertions if ins.get("url")}
+        
+        fallback_insertions = []
+        for url, data in forced_map.items():
+            if url not in llm_urls:
+                # The LLM didn't link this High Confidence match. We will force it.
+                # Use the 'alias' (from NER/Regex) as the anchor.
+                alias = data['alias']
+                # Verify alias is actually in the text (it should be, but safety first)
+                if alias in draft:
+                    fallback_insertions.append({
+                        "anchor": alias,
+                        "url": url,
+                        "is_fallback": True
+                    })
+                    st.toast(f"Force-linked: {alias}", icon="⚡")
+        
+        # Merge: Put fallback last? No, order doesn't matter for `apply_insertions` (it sorts by length)
+        # But we want to prefer LLM's anchor choice if available. 
+        # Since we only add if URL is missing, no conflict on URL.
+        # Conflict on Anchor? e.g. LLM links "Flow Neuroscience" (url A), we force "Flow" (url B - unlikely if logic works).
+        # Worst case: overlapping anchors. apply_insertions handles longest first.
+        final_insertions = insertions + fallback_insertions
+        
+        # 6. Apply
+        final_html = apply_insertions(draft, final_insertions)
         
         # Cost Logic
         st.session_state.total_input_tokens += (usage_ner["prompt_tokens"] + usage_link["prompt_tokens"])
