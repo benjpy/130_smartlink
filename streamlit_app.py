@@ -66,7 +66,8 @@ st.markdown("""
 [data-testid="stAppViewContainer"] {
     background-color: #f8fafc !important;
     color: #0f172a !important;
-    font-size: 16px !important; /* Increased Base Font */
+    font-family: 'Inter', sans-serif; /* Apply to container, let cascade */
+    font-size: 18px !important; /* Increased Base Font */
 }
 
 [data-testid="stSidebar"] {
@@ -74,10 +75,12 @@ st.markdown("""
     border-right: 1px solid #e2e8f0 !important;
 }
 
-html, body, [class*="css"], .stMarkdown, .stText, p, div, label, span, h1, h2, h3, h4, h5, h6 {
+/* Text Elements - Safe Overrides */
+p, h1, h2, h3, h4, h5, h6, li, label, .stMarkdown, .stText {
     font-family: 'Inter', sans-serif !important;
     color: #0f172a !important;
-    font-size: 16px !important; /* Global Increase */
+    font-size: 18px !important; 
+    line-height: 1.6 !important;
 }
 
 /* Fix Inputs (Text Area, Inputs) */
@@ -91,7 +94,8 @@ textarea, input {
     color: #0f172a !important;
     background-color: #ffffff !important;
     caret-color: #2563eb !important;
-    font-size: 16px !important; /* Input Font */
+    font-family: 'Inter', sans-serif !important;
+    font-size: 18px !important; /* Larger Input Font */
 }
 
 textarea::placeholder, input::placeholder {
@@ -101,27 +105,30 @@ textarea::placeholder, input::placeholder {
 /* Headings specific overrides */
 h1 {
     font-weight: 800 !important;
-    font-size: 2.5rem !important; /* Larger H1 */
+    font-size: 2.8rem !important; /* Even Larger H1 */
     background: -webkit-linear-gradient(135deg, #2563eb, #1e40af);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 1.5rem !important;
+    margin-bottom: 2rem !important;
+    padding-top: 1rem !important;
 }
 
 h2, h3 {
     font-weight: 700 !important;
+    margin-top: 1.5rem !important;
 }
 
 /* Buttons */
 div.stButton > button {
-    font-size: 16px !important; /* Button Font */
-    padding: 0.75rem 1.5rem !important;
+    font-size: 18px !important; /* Larger Button Text */
+    padding: 0.85rem 1.75rem !important;
+    font-weight: 600 !important;
 }
 
 /* Code Editorish Look for the HTML Editor */
 .stTextArea textarea {
     font-family: 'Menlo', 'Monaco', 'Courier New', monospace !important;
-    font-size: 15px !important;
+    font-size: 16px !important;
 }
 
 /* Live Preview Box */
@@ -134,7 +141,13 @@ div.stButton > button {
     font-family: 'Segoe UI', serif; 
     line-height: 1.8;
     color: #1e293b !important;
-    font-size: 18px !important; /* Larger Preview */
+    font-size: 20px !important; /* Even Larger Preview */
+}
+
+/* Debug Expander Fix */
+.streamlit-expanderHeader {
+    font-size: 16px !important;
+    color: #475569 !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -294,6 +307,7 @@ def render_output_section():
     # DEBUG SECTION (Temporary)
     with st.expander("🛠️ Debug: LLM Input Data"):
         st.write("Regex Raw Matches:", st.session_state.get("debug_regex", []))
+        st.write("Trace Log (Samphire):", st.session_state.get("trace_log", []))
         if st.session_state.result:
             st.write("NER Entities:", st.session_state.result.get("entities", []))
             st.write("Matched Entities (Forced Map):", [f"{k} -> {v['row']['url']}" for k,v in st.session_state.result.get("forced_map", {}).items()])
@@ -507,13 +521,16 @@ def match_entities_to_db(entities, meta):
         
         if best_score > threshold: 
             forced[best_row["url"]] = {"row": best_row, "alias": ent}
+            # TRACE LOG
+            if "samphire" in n_ent:
+                if "trace_log" not in st.session_state: st.session_state.trace_log = []
+                st.session_state.trace_log.append(f"ACCEPTED '{ent}' -> {best_row['url']} (Score: {best_score:.2f} > {threshold})")
             continue
-            
-        # 4. Fallback: If no candidates found via words (unlikely for "NotCo" if "Not" is indexed),
-        # or if checking acronyms/variations. 
-        # NotCo (5) vs The Not Company (15).
-        # Substring check?
-        
+        else:
+             if "samphire" in n_ent:
+                if "trace_log" not in st.session_state: st.session_state.trace_log = []
+                st.session_state.trace_log.append(f"REJECTED '{ent}' (Best: {best_score:.2f} <= {threshold}). Cands: {len(unique_cands)}")
+
     return forced
 
 def build_candidates_v2(draft: str, mat, meta, forced_map):
