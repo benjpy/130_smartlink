@@ -558,6 +558,14 @@ def run_autolink_process(draft, mat, meta):
         
         status.update(label="✅ Done!", state="complete", expanded=False)
 
+def delete_link_callback(url_to_remove):
+    if st.session_state.result:
+        current_html = st.session_state.result["html"]
+        new_html = remove_link_from_html(current_html, url_to_remove)
+        st.session_state.result["html"] = new_html
+        # We can safely update editor_content here because callbacks run before the script re-runs
+        st.session_state.editor_content = new_html
+
 def render_output_section():
     st.divider()
     st.subheader("🎉 Result")
@@ -595,11 +603,13 @@ def render_output_section():
             for i, l in enumerate(links):
                 c_del, c_txt = st.columns([0.2, 0.8])
                 with c_del:
-                    if st.button("🗑️", key=f"del_{i}", help=f"Remove link to {l['url']}"):
-                         new_html = remove_link_from_html(st.session_state.result["html"], l['url'])
-                         st.session_state.result["html"] = new_html
-                         st.session_state.editor_content = new_html # Sync editor
-                         st.rerun()
+                    st.button(
+                        "🗑️", 
+                        key=f"del_{i}", 
+                        help=f"Remove link to {l['url']}",
+                        on_click=delete_link_callback,
+                        args=(l['url'],)
+                    )
                 with c_txt:
                     st.markdown(f"[{l['anchor']}]({l['url']})")
 
