@@ -323,33 +323,39 @@ def match_entities_to_db(entities, meta):
         best_score = 0
         best_row = None
         
-        # Dedup candidates
-        unique_cands = {c['url']: c for c in candidates}
+        # Helper: is the first word of entity matching the first word of target?
+        # ent: "Canyon Energy" -> "canyon"
+        # target: "Canyon Magnet Energy" -> "canyon"
+        ent_first = n_ent.split()[0] if n_ent else ""
         
-        if unique_cands:
-            for url, row in unique_cands.items():
-                t_norm = normalize(entity_title_from_url(url))
-                
-                # Check 1: Overlapping words count?
-                # If we matched on "Not", does "Not" appear in the title? Yes.
-                # If title is "The Not Company", match "Not".
-                
-                # Check 2: Fuzzy Ratio
-                # Compare "not co" vs "the not company"
-                score = difflib.SequenceMatcher(None, n_ent_spaced, t_norm).ratio()
-                
-                # Boost score if a significant word is SHARED exactly?
-                # We already know they share a word because we got here via `word_index`.
-                # But "Not" is common? 
-                
-                if score > best_score:
-                    best_score = score
-                    best_row = row
+        candidates_to_check = list(unique_cands.items()) if unique_cands else []
         
-        # If score is good, take it
-        # For "NotCo" (6 chars) vs "The Not Company" (15 chars) -> Score ~ 0.47
-        # We lower threshold if we have word overlap
-        threshold = 0.4 if len(ent_words) > 0 else 0.7
+        for url, row in candidates_to_check:
+            t_norm = normalize(entity_title_from_url(url))
+            
+            # Base SCORE: Fuzzy match
+            # Compare "not co" vs "the not company"
+            score = difflib.SequenceMatcher(None, n_ent_spaced, t_norm).ratio()
+            
+            # BONUS: First Word Match
+            # If the first significant word of the entity matches a word in the title
+            if len(ent_first) >= 3 and ent_first in t_norm:
+                score += 0.15 # Boost
+                
+            # DOUBLE BONUS: If it matches the FIRST word of the title
+            t_first = t_norm.split()[0] if t_norm else ""
+            if len(ent_first) >= 3 and ent_first == t_first:
+                score += 0.2
+            
+            if score > best_score:
+                best_score = score
+                best_row = row
+        
+        # Threshold Logic
+        # If we have a First Word Match, we can be much looser on the rest.
+        # "Canyon Energy" (canyon match) vs "Canyon Magnet" -> Score might be 0.6 + 0.35 boost = 0.95.
+        threshold = 0.6
+        if len(ent_first) >= 3: threshold = 0.5 
         
         if best_score > threshold: 
             forced[best_row["url"]] = {"row": best_row, "alias": ent}
@@ -668,6 +674,8 @@ def render_output_section():
     with c3:
         st.markdown("#### 🔗 Manage Links")
         links = extract_links_for_ui(st.session_state.result["html"])
+        current_urls = {l['url'] for l in links}
+        
         if not links:
             st.info("No links found.")
         else:
@@ -683,6 +691,47 @@ def render_output_section():
                     )
                 with c_txt:
                     st.markdown(f"[{l['anchor']}]({l['url']})")
+                    
+    # NEW: Potential Matches Section
+    st.divider()
+    with st.expander("💡 Potential Missed Links (High Confidence)", expanded=True):
+        # Scan phrases for high score items NOT in current_urls
+        phrases = st.session_state.result.get("phrases", [])
+        missed = []
+        seen_missed = set()
+        
+        for p in phrases:
+            for c in p["candidates"]:
+                if c['url'] in current_urls: continue
+                if c['url'] in seen_missed: continue
+                
+                # Criteria for being "Potential":
+                # 1. Strong Match (NER matched)
+                # 2. High Semantic Score (e.g. > 0.70)
+                if c.get("is_strong_match") or c.get("score", 0) > 0.72:
+                    missed.append({
+                        "url": c['url'],
+                        "title": c['title'],
+                        "score": c.get("score", 0),
+                        "reason": c.get("matched_via", "Semantic Match"),
+                        "sentence": p["sentence"]
+                    })
+                    seen_missed.add(c['url'])
+        
+        if not missed:
+            st.write("No other high-confidence matches found.")
+        else:
+            # Sort by score
+            missed.sort(key=lambda x: x['score'] if x['score'] < 2 else 1.0, reverse=True) # Sort semantics, put Strong (score 1.0) at top
+            
+            st.info("These pages matched your content but weren't automatically linked. You can add them manually in the editor.")
+            
+            for m in missed[:15]: # Show top 15
+                score_display = "NER Match" if m.get("reason") != "Semantic Match" else f"Score: {m['score']:.2f}"
+                st.markdown(f"**[{m['title']}]({m['url']})** — *{score_display}*")
+                st.caption(f"Context: \"...{m['sentence'][:80]}...\"")
+                st.markdown("---")
+
 
 if __name__ == "__main__":
     main()
