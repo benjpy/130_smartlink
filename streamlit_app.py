@@ -76,6 +76,7 @@ st.markdown("""
     background-color: var(--bg-color) !important;
     color: var(--text-main) !important;
     font-family: 'Inter', sans-serif;
+    font-size: 20px !important; /* Huge Base Font */
 }
 
 [data-testid="stSidebar"] {
@@ -92,21 +93,21 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
     font-weight: 800 !important;
-    font-size: 3.5rem !important; /* HUGE Title */
+    font-size: 4rem !important; /* MASSIVE Title */
     background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    padding-bottom: 0.5rem !important;
-    margin-bottom: 2.5rem !important;
+    padding-bottom: 1rem !important;
+    margin-bottom: 3rem !important;
 }
 
-h2 { font-size: 2.2rem !important; font-weight: 700 !important; margin-top: 2rem !important; }
-h3 { font-size: 1.6rem !important; font-weight: 600 !important; color: var(--primary) !important; }
-h4 { font-size: 1.3rem !important; font-weight: 600 !important; }
+h2 { font-size: 2.5rem !important; font-weight: 700 !important; margin-top: 2.5rem !important; }
+h3 { font-size: 1.8rem !important; font-weight: 600 !important; color: var(--primary) !important; }
+h4 { font-size: 1.5rem !important; font-weight: 600 !important; }
 
-p, li, label, .stMarkdown, .stText, div {
-    font-size: 18px !important;
-    line-height: 1.6 !important;
+p, li, label, .stMarkdown, .stText, div, span {
+    font-size: 20px !important;
+    line-height: 1.7 !important;
     color: var(--text-main);
 }
 
@@ -131,8 +132,9 @@ div[data-baseweb="textarea"]:focus-within, div[data-baseweb="input"]:focus-withi
 
 textarea, input {
     font-family: 'Inter', sans-serif !important;
-    font-size: 18px !important;
+    font-size: 20px !important;
     color: var(--text-main) !important;
+    line-height: 1.6 !important;
 }
 
 /* Buttons */
@@ -287,7 +289,7 @@ def identify_entities_with_llm(draft: str):
     # 2. Regex Fallback (Heuristic)
     # Find words starting with Capital letter, containing letters/numbers.
     # Exclude common stopwords.
-    regex_matches = re.findall(r'\\b[A-Z][a-zA-Z0-9]+\\b', draft)
+    regex_matches = re.findall(r'\b[A-Z][a-zA-Z0-9]+\b', draft)
     
     # Simple stoplist for the regex (since we don't want to fuzzy match 'The' against 'The Not Company')
     STOPWORDS = {
