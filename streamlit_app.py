@@ -116,26 +116,23 @@ p, li, label, .stMarkdown, .stText, div, span {
     border-radius: 12px !important;
 }
 
-/* Inputs */
-div[data-baseweb="textarea"], div[data-baseweb="input"] {
+/* Inputs: Force White Background & Black Text */
+.stTextArea textarea, .stTextInput input, div[data-baseweb="textarea"], div[data-baseweb="input"] {
     background-color: #ffffff !important;
-    border: 2px solid #e2e8f0 !important;
-    border-radius: 12px !important;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
-}
-
-div[data-baseweb="textarea"]:focus-within, div[data-baseweb="input"]:focus-within {
-    border-color: var(--primary) !important;
-    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1) !important;
-}
-
-textarea, input {
+    color: #000000 !important;
+    caret-color: #000000; /* Black cursor */
     font-family: 'Inter', sans-serif !important;
-    font-size: 20px !important;
-    color: var(--text-main) !important;
+    font-size: 22px !important; /* Even Bigger for readability */
     line-height: 1.6 !important;
+    -webkit-text-fill-color: #000000 !important; /* Force override for Webkit */
 }
+
+/* Placeholder color */
+textarea::placeholder, input::placeholder {
+    color: #64748b !important;
+    opacity: 1 !important;
+}
+
 
 /* Buttons */
 div.stButton > button {
@@ -612,6 +609,13 @@ def run_autolink_process(draft, mat, meta):
         # 2. Match to DB
         st.write("📂 Mapping to Knowledge Base...")
         forced_map = match_entities_to_db(entities, meta)
+        
+        # DEBUG: Show Samphire Trace
+        if "trace_log" in st.session_state and st.session_state.trace_log:
+            st.warning("🔎 Samphire Trace Log:")
+            for log in st.session_state.trace_log:
+                st.code(log, language="text")
+
         
         # 3. Candidates
         st.write("🧠 Building Semantic Candidates...")
