@@ -657,7 +657,15 @@ def run_autolink_process(draft, mat, meta):
                  st.write("Merge Debug:", merge_debug)
                  st.write("Final Merged Candidates:", final_insertions)
 
+        # DEBUG: CRITICAL SAMPHIRE CHECK
+        samphire_cand = next((i for i in final_insertions if "samphire" in i['anchor'].lower()), None)
+        if samphire_cand:
+            st.success(f"✅ Samphire IS in final insertions: {samphire_cand}")
+        else:
+            st.error("❌ Samphire is NOT in final insertions. Check Merge Debug above.")
+
         # 6. Apply
+        st.write("🔗 Applying insertions to HTML...")
         final_html = apply_insertions(draft, final_insertions)
         
         # Cost Logic (unchanged)
