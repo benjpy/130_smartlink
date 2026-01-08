@@ -328,6 +328,9 @@ def match_entities_to_db(entities, meta):
         # target: "Canyon Magnet Energy" -> "canyon"
         ent_first = n_ent.split()[0] if n_ent else ""
         
+        # Dedup candidates
+        unique_cands = {c['url']: c for c in candidates}
+        
         candidates_to_check = list(unique_cands.items()) if unique_cands else []
         
         for url, row in candidates_to_check:
