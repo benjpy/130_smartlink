@@ -390,6 +390,7 @@ def call_llm_autolink(draft: str, phrases: list):
 def apply_insertions(html: str, insertions: list) -> str:
     """
     Robust insertion that prevents replacing text inside existing HTML tags.
+    Uses opaque placeholders to avoid recursive matching.
     """
     # 1. De-duplicate and validate
     valid_ins = []
@@ -401,56 +402,47 @@ def apply_insertions(html: str, insertions: list) -> str:
         seen.add(u)
         valid_ins.append(ins)
     
-    # Sort by anchor length (longest first)
+    # Sort by anchor length (longest first) to match specific phrases before general ones
     valid_ins.sort(key=lambda x: len(x['anchor']), reverse=True)
     
     # 2. Split into tokens (tags vs text)
-    # This splits by tags, e.g. "Foo <b>Bar</b>" -> ['Foo ', '<b>', 'Bar', '</b>', '']
     tokens = re.split(r'(<[^>]+>)', html)
     
+    # Store replacements map: placeholder -> (url, anchor)
+    replacements = {}
+    
     # 3. Perform replacement ONLY on text tokens
-    for ins in valid_ins:
+    for i, ins in enumerate(valid_ins):
         anchor = ins['anchor']
         url = ins['url']
+        # Use a short, opaque placeholder that won't trigger other matches
+        pid = f"__L_{i}__" 
+        replacements[pid] = f'<a href="{url}">{anchor}</a>'
+        
         pattern = re.compile(re.escape(anchor), re.IGNORECASE)
         
-        found = False
-        for i, token in enumerate(tokens):
-            # If it's a tag (starts with <), skip
-            if token.startswith('<'):
+        found_for_this_link = False
+        
+        for k, token in enumerate(tokens):
+            # Skip tags or tokens that are already placeholders (though our PID is unique enough)
+            if token.startswith('<') or token.startswith('__L_'):
                 continue
                 
-            # If we already found this link (prevent duplicates), skip? 
-            # (Requirement: "no_duplicate_urls" usually implies 1 link per URL globally)
-            # If we want to link ALL occurrences, remove `found` check.
-            # But normally we link the first occurrence.
-            if found: break
+            if found_for_this_link: break
             
-            # Search in text token
             if pattern.search(token):
-                # Replace ONLY the first occurrence in this token
-                # Check if it's already linked? No, `token` is pure text outside tags.
-                # BUT, wait - if we have "Safe <a href='...'>Safe</a>", tokens are "Safe ", "<a>", "Safe", "</a>".
-                # We won't accidentally link inside the href.
-                
-                # We use a placeholder to avoid re-matching inside this loop iteration accidentally
-                # though regex logic on static string is fine, but placeholder is safer for final reassembly
-                
-                new_token = pattern.sub(f'__LINK_PLACEHOLDER_{url}__', token, count=1)
+                # Replace FIRST occurrence in this token
+                new_token = pattern.sub(pid, token, count=1)
                 if new_token != token:
-                    tokens[i] = new_token
-                    found = True # Link matched for this URL
+                    tokens[k] = new_token
+                    found_for_this_link = True
                     
-    # 4. Reassemble and fill placeholders
-    # This avoids nested tag issues completely because we never insert valid HTML until the very end.
+    # 4. Reassemble
     final_html = "".join(tokens)
     
-    for ins in valid_ins:
-        url = ins['url']
-        anchor = ins['anchor']
-        placeholder = f'__LINK_PLACEHOLDER_{url}__'
-        link_html = f'<a href="{url}">{anchor}</a>'
-        final_html = final_html.replace(placeholder, link_html)
+    # 5. Swap placeholders for real links
+    for pid, link_tag in replacements.items():
+        final_html = final_html.replace(pid, link_tag)
         
     return final_html
 
