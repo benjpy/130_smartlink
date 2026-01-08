@@ -521,10 +521,15 @@ def apply_insertions(html: str, insertions: list) -> str:
         replacements[pid] = f'<a href="{url}">{anchor}</a>'
         
         # Use simple escaping, verify regex validity
-        safe_anchor = re.escape(anchor)
-        # Ensure we don't match inside words if possible, but for now strict substring is safer for "Samphire"
-        # We can add \b boundary if needed, but sometimes it breaks formatted text.
-        pattern = re.compile(safe_anchor, re.IGNORECASE)
+        # FORCE FIX: Assume "Samphire" might have non-breaking spaces or be adjacent to tags
+        # We replace any sequence of whitespace with \s+ in the regex
+        escaped = re.escape(anchor)
+        # If anchor has spaces, make them flexible
+        pattern_str = escaped.replace(r"\ ", r"\s+")
+        
+        # Add word boundaries ONLY if it's a short word to avoid "Samphire" matching inside "SamphireNeuroscience" (if concatenated)
+        # But for debugging, let's keep it loose first.
+        pattern = re.compile(pattern_str, re.IGNORECASE)
         
         found_for_this_link = False
         
@@ -546,8 +551,27 @@ def apply_insertions(html: str, insertions: list) -> str:
                 applied_count += 1
                 
         if not found_for_this_link:
-             # DEBUG: Why was it missed?
-             pass # st.toast(f"Missed link insertion for: {anchor}", icon="⚠️")
+             # GENERAL FALLBACK: If regex failed (e.g. valid text but complex regex chars), try manual string check.
+             # This handles ALL startups, not just Samphire.
+             for k, token in enumerate(tokens):
+                if token.startswith('<') or token.startswith('__L_'): continue
+                
+                # Case-insensitive manual find
+                l_token = token.lower()
+                l_anchor = anchor.lower()
+                
+                start_idx = l_token.find(l_anchor)
+                if start_idx != -1:
+                     # Found it manually!
+                     # Extract original casing from token
+                     end_idx = start_idx + len(anchor)
+                     # Replace with placeholder
+                     new_token = token[:start_idx] + pid + token[end_idx:]
+                     tokens[k] = new_token
+                     found_for_this_link = True
+                     # st.toast(f"Fallback link applied: {anchor}", icon="🛡️")
+                     break
+
 
     # 4. Reassemble
     final_html = "".join(tokens)
