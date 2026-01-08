@@ -627,54 +627,59 @@ def run_autolink_process(draft, mat, meta):
         
         insertions = resp.get("insertions", [])
         
-        # 5. POST-PROCESS: Force Fallback Links
-        # Verification: Check if anchors actually exist in draft
-        handled_urls = set()
+        # 5. POST-PROCESS: Aggressive Merging Strategy
+        # We have two sources of truth:
+        # A. LLM Suggestions (resp.get("insertions"))
+        # B. Our "Forced Map" (NER + Fuzzy matching) - effectively "Self-Generated" suggestions.
         
-        # DEBUG: Fallback Analysis
-        fallback_debug = []
+        # Strategy:
+        # 1. Generate "Self Suggestions" from forced_map.
+        # 2. Merge A + B.
+        # 3. Collision Resolution: Exact same URL? Pick the one with the LONGEST Anchor.
+        #    (e.g. "Flow Neuroscience" > "Neuroscience")
         
+        candidates_map = {} # url -> insertion_dict
+        
+        # A. Process LLM Suggestions
         for ins in insertions:
-            anchor = ins.get("anchor")
             url = ins.get("url")
-            # Loose check: if anchor is in draft (case insensitive)
-            exists = False
-            if anchor and re.search(re.escape(anchor), draft, re.IGNORECASE):
-                exists = True
-                handled_urls.add(url)
-            fallback_debug.append(f"LLM Link: '{anchor}' ({url}) -> Exists in Text? {exists}")
+            anchor = ins.get("anchor")
+            if not url or not anchor: continue
+            
+            # Verify existence (prevent hallucination)
+            if re.search(re.escape(anchor), draft, re.IGNORECASE):
+                candidates_map[url] = ins
         
-        fallback_insertions = []
+        # B. Process Forced/Self Suggestions
         for url, data in forced_map.items():
-            if url not in handled_urls:
-                alias = data['alias']
-                # Case-insensitive check for alias in draft
-                found_in_draft = re.search(re.escape(alias), draft, re.IGNORECASE)
+            alias = data['alias']
+            # We trust the alias exists because it came from NER/Regex, but let's be safe
+            found_match = re.search(re.escape(alias), draft, re.IGNORECASE)
+            
+            if found_match:
+                # Create a candidate
+                self_ins = {"anchor": alias, "url": url, "source": "forced"}
                 
-                fallback_debug.append(f"Checking Fallback: '{alias}' ({url}) -> Handled? No. Found in draft? {bool(found_in_draft)}")
-                
-                if found_in_draft:
-                    fallback_insertions.append({
-                        "anchor": alias,
-                        "url": url,
-                        "is_fallback": True
-                    })
+                if url in candidates_map:
+                    # Collision! Compare lengths.
+                    existing_anchor = candidates_map[url]['anchor']
+                    if len(alias) > len(existing_anchor):
+                        candidates_map[url] = self_ins # Override with longer
+                        st.write(f"⚠️ Override: Preferring '{alias}' over '{existing_anchor}'")
+                else:
+                    candidates_map[url] = self_ins
                     st.toast(f"Force-linked: {alias}", icon="⚡")
-            else:
-                fallback_debug.append(f"Checking Fallback: '{data['alias']}' -> Already Handled by LLM.")
         
-        if fallback_debug:
+        final_insertions = list(candidates_map.values())
+        
+        if "trace_log" in st.session_state:
              with st.expander("🛠️ Debug: Linking Logic", expanded=True):
-                 st.write(fallback_debug)
-                 st.write("Final Insertions:", insertions + fallback_insertions)
+                 st.write("Final Merged Candidates:", final_insertions)
 
-        
-        final_insertions = insertions + fallback_insertions
-        
         # 6. Apply
         final_html = apply_insertions(draft, final_insertions)
         
-        # Cost Logic
+        # Cost Logic (unchanged)
         st.session_state.total_input_tokens += (usage_ner["prompt_tokens"] + usage_link["prompt_tokens"])
         st.session_state.total_output_tokens += (usage_ner["completion_tokens"] + usage_link["completion_tokens"])
         
@@ -685,8 +690,8 @@ def run_autolink_process(draft, mat, meta):
         st.session_state.result = {
             "html": final_html,
             "phrases": phrases,
-            "forced_map": forced_map, # SAVE THIS
-            "entities": entities # SAVE THIS
+            "forced_map": forced_map, 
+            "entities": entities 
         }
         
         status.update(label="✅ Done!", state="complete", expanded=False)
