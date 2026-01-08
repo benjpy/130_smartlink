@@ -276,40 +276,54 @@ def match_entities_to_db(entities, meta):
             forced[row["url"]] = {"row": row, "alias": ent}
             continue
             
-        # 2. Token Overlap (Set Intersection)
+        # 2. Token Overlap (Set Intersection) with CamelCase handling
+        # "NotCo" -> "Not Co"
+        spaced_ent = re.sub(r'([a-z])([A-Z])', r'\1 \2', ent)
+        n_ent_spaced = normalize(spaced_ent)
+        
         candidates = []
-        ent_words = [w for w in n_ent.split() if len(w) >= 3]
+        # Check both the original run-together words and spaced words
+        # "notco" might be in index? Unlikely. "not" "co" likely are.
+        ent_words = set([w for w in n_ent.split() if len(w) >= 3] + 
+                        [w for w in n_ent_spaced.split() if len(w) >= 3])
         
         for w in ent_words:
             if w in word_index:
                 candidates.extend(word_index[w])
         
         # 3. Fuzzy Check on Candidates + Global Fuzzy fallback
-        # If no word overlap, maybe "NotCo" vs "The Not Company" (Not is stopped? or matched?)
-        # "Not" is 3 chars. So it should match "The Not Company".
-        
-        # We also treat the whole entity string vs whole title string
-        # difflib is slow for 1000 items? 1000 is small. 
-        # But let's prioritize candidates first.
-        
         best_score = 0
         best_row = None
         
         # Dedup candidates
         unique_cands = {c['url']: c for c in candidates}
         
-        # If we have candidates from word match, check them first
         if unique_cands:
             for url, row in unique_cands.items():
                 t_norm = normalize(entity_title_from_url(url))
-                # Ratio
-                score = difflib.SequenceMatcher(None, n_ent, t_norm).ratio()
+                
+                # Check 1: Overlapping words count?
+                # If we matched on "Not", does "Not" appear in the title? Yes.
+                # If title is "The Not Company", match "Not".
+                
+                # Check 2: Fuzzy Ratio
+                # Compare "not co" vs "the not company"
+                score = difflib.SequenceMatcher(None, n_ent_spaced, t_norm).ratio()
+                
+                # Boost score if a significant word is SHARED exactly?
+                # We already know they share a word because we got here via `word_index`.
+                # But "Not" is common? 
+                
                 if score > best_score:
                     best_score = score
                     best_row = row
         
         # If score is good, take it
-        if best_score > 0.6: # "Canyon Energy" vs "Canyon Magnet" ~ 0.6-0.7
+        # For "NotCo" (6 chars) vs "The Not Company" (15 chars) -> Score ~ 0.47
+        # We lower threshold if we have word overlap
+        threshold = 0.4 if len(ent_words) > 0 else 0.7
+        
+        if best_score > threshold: 
             forced[best_row["url"]] = {"row": best_row, "alias": ent}
             continue
             
