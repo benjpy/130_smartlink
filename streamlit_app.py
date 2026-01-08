@@ -213,8 +213,9 @@ def entity_title_from_url(url: str):
 def identify_entities_with_llm(draft: str):
     """
     Step 1: Ask LLM to extract potential company names from the text.
-    Acts as a smart filter.
+    Also adds a Regex fallback to catch capitalized words (potential names) that LLM might miss.
     """
+    # 1. LLM Extraction
     model = genai.GenerativeModel(LLM_MODEL)
     prompt = f"""
     Analyze the following text and identify all 'Company' or 'Organization' names mentioned.
@@ -225,6 +226,9 @@ def identify_entities_with_llm(draft: str):
     {draft[:8000]}
     """
     
+    entities = []
+    usage = {"prompt_tokens": 0, "completion_tokens": 0}
+    
     try:
         resp = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
         entities = json.loads(resp.text)
@@ -232,10 +236,34 @@ def identify_entities_with_llm(draft: str):
             "prompt_tokens": resp.usage_metadata.prompt_token_count,
             "completion_tokens": resp.usage_metadata.candidates_token_count
         }
-        return entities, usage
     except Exception:
-        # st.error(f"NER Error: {e}")
-        return [], {"prompt_tokens":0, "completion_tokens":0}
+        pass
+
+    # 2. Regex Fallback (Heuristic)
+    # Find words starting with Capital letter, containing letters/numbers.
+    # Exclude common stopwords.
+    regex_matches = re.findall(r'\b[A-Z][a-zA-Z0-9]+\b', draft)
+    
+    # Simple stoplist for the regex (since we don't want to fuzzy match 'The' against 'The Not Company')
+    STOPWORDS = {
+        "The", "A", "And", "Or", "In", "On", "At", "To", "For", "Of", "With", "By", "From", "Up", "Out", 
+        "It", "Is", "Are", "Was", "Were", "Be", "Been", "Has", "Have", "Had", "Do", "Does", "Did",
+        "But", "So", "If", "While", "When", "Where", "Why", "How", "All", "Any", "Some", "No", "Not", 
+        "Yes", "We", "You", "They", "He", "She", "It", "My", "Your", "Our", "Their", "His", "Her",
+        "This", "That", "These", "Those", "Just", "More", "Most", "Other", "Such", "New", "Good", "High",
+        "Our", "Your", "My", "Their", "His", "Her", "Its"
+    } # "Not" is in stopwords... wait. "NotCo" is CamelCase. "Not" is just "Not".
+    # User wants "NotCo". 
+    # "Not" is in STOPWORDS. "NotCo" is NOT in STOPWORDS.
+    
+    # Filter and add
+    for m in regex_matches:
+        if len(m) >= 3 and m not in STOPWORDS and m not in entities:
+             entities.append(m)
+             
+    # Also catch CamelCase explicitly? "NotCo" is matched by [A-Z][a-zA-Z0-9]+
+    
+    return entities, usage
 
 import difflib
 
