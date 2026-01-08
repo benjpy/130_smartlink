@@ -237,60 +237,87 @@ def identify_entities_with_llm(draft: str):
         # st.error(f"NER Error: {e}")
         return [], {"prompt_tokens":0, "completion_tokens":0}
 
+import difflib
+
 def match_entities_to_db(entities, meta):
     """
     Step 2: Map extracted names to our existing URLs in 'meta'.
+    Now with fuzzy matching.
     """
     forced = {}
     
-    # Pre-index meta by normalized title for O(1) lookup
-    meta_index = {}
-    word_index = {}
+    # Pre-index meta
+    meta_index = {} # Exact slug
+    word_index = {} # Word -> list of rows
+    all_titles = [] # For fuzzy scanning
     
     for row in meta:
         title = entity_title_from_url(row["url"])
         norm_title = normalize(title)
-        meta_index[norm_title] = row
         
-        # Index unique significant words for partial matching
+        meta_index[norm_title] = row
+        all_titles.append((norm_title, row))
+        
+        # Index unique significant words
+        # Lowered threshold to 3 to catch "Not", "Bio", "Hax", "Fab"
         for w in norm_title.split():
-            if len(w) >= 4:
+            if len(w) >= 3:
                 if w not in word_index: word_index[w] = []
                 word_index[w].append(row)
 
     for ent in entities:
         if not isinstance(ent, str): continue
         n_ent = normalize(ent)
+        if len(n_ent) < 2: continue
         
         # 1. Exact match
         if n_ent in meta_index:
             row = meta_index[n_ent]
-            forced[row["url"]] = row
+            forced[row["url"]] = {"row": row, "alias": ent}
             continue
             
-        # 2. Partial / Keyword Match
-        # If entity is "Canyon Energy", we look for "canyon" (len=6) and "energy" (len=6)
-        # "Canyon" might point to "Canyon Magnet Energy".
-        
+        # 2. Token Overlap (Set Intersection)
         candidates = []
-        for w in n_ent.split():
-            if len(w) >= 4 and w in word_index:
+        ent_words = [w for w in n_ent.split() if len(w) >= 3]
+        
+        for w in ent_words:
+            if w in word_index:
                 candidates.extend(word_index[w])
         
-        # If we found candidates, check if they are "good" matches (overlapping words)
-        if candidates:
-            # unique candidates
-            cand_map = {c['url']: c for c in candidates}
-            for url, row in cand_map.items():
-                row_title_norm = normalize(entity_title_from_url(url))
-                
-                # Jaccardish containment: do they share significant words?
-                s1 = set(w for w in n_ent.split() if len(w) > 3)
-                s2 = set(w for w in row_title_norm.split() if len(w) > 3)
-                
-                if s1 & s2: # If they share at least one significant word
-                    forced[url] = row
-
+        # 3. Fuzzy Check on Candidates + Global Fuzzy fallback
+        # If no word overlap, maybe "NotCo" vs "The Not Company" (Not is stopped? or matched?)
+        # "Not" is 3 chars. So it should match "The Not Company".
+        
+        # We also treat the whole entity string vs whole title string
+        # difflib is slow for 1000 items? 1000 is small. 
+        # But let's prioritize candidates first.
+        
+        best_score = 0
+        best_row = None
+        
+        # Dedup candidates
+        unique_cands = {c['url']: c for c in candidates}
+        
+        # If we have candidates from word match, check them first
+        if unique_cands:
+            for url, row in unique_cands.items():
+                t_norm = normalize(entity_title_from_url(url))
+                # Ratio
+                score = difflib.SequenceMatcher(None, n_ent, t_norm).ratio()
+                if score > best_score:
+                    best_score = score
+                    best_row = row
+        
+        # If score is good, take it
+        if best_score > 0.6: # "Canyon Energy" vs "Canyon Magnet" ~ 0.6-0.7
+            forced[best_row["url"]] = {"row": best_row, "alias": ent}
+            continue
+            
+        # 4. Fallback: If no candidates found via words (unlikely for "NotCo" if "Not" is indexed),
+        # or if checking acronyms/variations. 
+        # NotCo (5) vs The Not Company (15).
+        # Substring check?
+        
     return forced
 
 def build_candidates_v2(draft: str, mat, meta, forced_map):
@@ -312,24 +339,34 @@ def build_candidates_v2(draft: str, mat, meta, forced_map):
         
         this_sent_candidates = {}
         
-        # 1. Add Forced matches IF they (or their distinct parts) allow it
-        # We rely on the LLM later to decide if it's REALLY a match, 
-        # so we can be generous here.
-        for url, row in forced_map.items():
-            # Only add if the entity (or part of it) is plausibly in the sentence
-            # Checking full title might fail for "Canyon Energy" vs "Canyon Magnet"
-            # So checking the KEY is better.
+        # 1. Add Forced matches
+        for url, data in forced_map.items():
+            row = data['row']
+            alias = data['alias'] # The name found by NER (e.g. "Canyon Energy")
             
-            # Simple heuristic: If any significant word of the entity title is in the sentence
-            title = entity_title_from_url(url)
-            t_words = [w for w in normalize(title).split() if len(w) > 3]
-            if any(w in sent_norm for w in t_words):
+            # Check if the alias (fuzzy) is in this sentence
+            # We trust NER that 'alias' IS in the text somewhere.
+            # But is it in *this* sentence?
+            
+            # Simple check: if a signficiant part of alias is in sent_norm
+            alias_parts = [w for w in normalize(alias).split() if len(w) >= 3]
+            is_in_sentence = False
+            if not alias_parts:
+                # Alias is short? "HAX"
+                if normalize(alias) in sent_norm: is_in_sentence = True
+            else:
+                # If any significant word of alias matches
+                if any(w in sent_norm for w in alias_parts):
+                    is_in_sentence = True
+            
+            if is_in_sentence:
                  this_sent_candidates[url] = {
                     "url": url,
-                    "title": title,
+                    "title": entity_title_from_url(url),
                     "type": row.get("content_type", "company"),
                     "score": 1.0,
-                    "is_strong_match": True
+                    "is_strong_match": True,
+                    "matched_via": alias 
                 }
 
         # 2. Add Top Semantic Matches
@@ -345,7 +382,7 @@ def build_candidates_v2(draft: str, mat, meta, forced_map):
                     "score": float(scores[idx]),
                     "is_strong_match": False
                 }
-            if len(this_sent_candidates) >= 20: # Increased limit
+            if len(this_sent_candidates) >= 20:
                 break
         
         items.append({
