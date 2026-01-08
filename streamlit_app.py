@@ -213,12 +213,13 @@ def entity_title_from_url(url: str):
 def identify_entities_with_llm(draft: str):
     """
     Step 1: Ask LLM to extract potential company names from the text.
-    This acts as a smart filter before we even look at our database.
+    Acts as a smart filter.
     """
     model = genai.GenerativeModel(LLM_MODEL)
     prompt = f"""
     Analyze the following text and identify all 'Company' or 'Organization' names mentioned.
-    Return ONLY a JSON list of strings. Do not include extra text.
+    Include nicknames or variations (e.g., 'Canyon Energy' for 'Canyon Magnet Energy').
+    Return ONLY a JSON list of strings.
     
     Text:
     {draft[:8000]}
@@ -227,13 +228,12 @@ def identify_entities_with_llm(draft: str):
     try:
         resp = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
         entities = json.loads(resp.text)
-        
         usage = {
             "prompt_tokens": resp.usage_metadata.prompt_token_count,
             "completion_tokens": resp.usage_metadata.candidates_token_count
         }
         return entities, usage
-    except Exception as e:
+    except Exception:
         # st.error(f"NER Error: {e}")
         return [], {"prompt_tokens":0, "completion_tokens":0}
 
@@ -245,44 +245,52 @@ def match_entities_to_db(entities, meta):
     
     # Pre-index meta by normalized title for O(1) lookup
     meta_index = {}
+    word_index = {}
+    
     for row in meta:
         title = entity_title_from_url(row["url"])
         norm_title = normalize(title)
         meta_index[norm_title] = row
-        # distinct words index for partial
+        
+        # Index unique significant words for partial matching
         for w in norm_title.split():
-            if len(w) > 4: # index significant words
-                if w not in meta_index: meta_index[w] = []
-                if isinstance(meta_index[w], list): meta_index[w].append(row)
+            if len(w) >= 4:
+                if w not in word_index: word_index[w] = []
+                word_index[w].append(row)
 
     for ent in entities:
         if not isinstance(ent, str): continue
         n_ent = normalize(ent)
         
-        # 1. Exact match on full slug
-        if n_ent in meta_index and isinstance(meta_index[n_ent], dict):
+        # 1. Exact match
+        if n_ent in meta_index:
             row = meta_index[n_ent]
             forced[row["url"]] = row
             continue
             
-        # 2. Heuristic partial match
-        # If the entity is "Orbit Fab" and we have "orbit-fab", normalize matches.
-        # If entity is "HAX" and we have "hax", matches.
-        # Check against list buckets
-        found = False
-        parts = n_ent.split()
-        for p in parts:
-            if len(p) > 4 and p in meta_index and isinstance(meta_index[p], list):
-                # We have candidates containing this word
-                for candidate_row in meta_index[p]:
-                    cand_title = entity_title_from_url(candidate_row["url"])
-                    # Simple inclusion check
-                    if normalize(cand_title) in n_ent or n_ent in normalize(cand_title):
-                        forced[candidate_row["url"]] = candidate_row
-                        found = True
-                        break
-            if found: break
-            
+        # 2. Partial / Keyword Match
+        # If entity is "Canyon Energy", we look for "canyon" (len=6) and "energy" (len=6)
+        # "Canyon" might point to "Canyon Magnet Energy".
+        
+        candidates = []
+        for w in n_ent.split():
+            if len(w) >= 4 and w in word_index:
+                candidates.extend(word_index[w])
+        
+        # If we found candidates, check if they are "good" matches (overlapping words)
+        if candidates:
+            # unique candidates
+            cand_map = {c['url']: c for c in candidates}
+            for url, row in cand_map.items():
+                row_title_norm = normalize(entity_title_from_url(url))
+                
+                # Jaccardish containment: do they share significant words?
+                s1 = set(w for w in n_ent.split() if len(w) > 3)
+                s2 = set(w for w in row_title_norm.split() if len(w) > 3)
+                
+                if s1 & s2: # If they share at least one significant word
+                    forced[url] = row
+
     return forced
 
 def build_candidates_v2(draft: str, mat, meta, forced_map):
@@ -290,27 +298,32 @@ def build_candidates_v2(draft: str, mat, meta, forced_map):
     items = []
     if not sentences: return []
 
-    # Embed sentences
     try:
         sent_embeddings = batch_embed(sentences)
-    except Exception as e:
+    except Exception:
         return []
 
-    # Scores
     all_scores = (mat @ sent_embeddings.T).T 
     
     for i, sent in enumerate(sentences):
         pid = i + 1
         scores = all_scores[i]
-        
-        # 1. Add Forced/NER matches if present in this sentence
         sent_norm = normalize(sent)
+        
         this_sent_candidates = {}
         
+        # 1. Add Forced matches IF they (or their distinct parts) allow it
+        # We rely on the LLM later to decide if it's REALLY a match, 
+        # so we can be generous here.
         for url, row in forced_map.items():
+            # Only add if the entity (or part of it) is plausibly in the sentence
+            # Checking full title might fail for "Canyon Energy" vs "Canyon Magnet"
+            # So checking the KEY is better.
+            
+            # Simple heuristic: If any significant word of the entity title is in the sentence
             title = entity_title_from_url(url)
-            # Check if this forced entity is actually in this sentence string
-            if normalize(title) in sent_norm:
+            t_words = [w for w in normalize(title).split() if len(w) > 3]
+            if any(w in sent_norm for w in t_words):
                  this_sent_candidates[url] = {
                     "url": url,
                     "title": title,
@@ -332,7 +345,7 @@ def build_candidates_v2(draft: str, mat, meta, forced_map):
                     "score": float(scores[idx]),
                     "is_strong_match": False
                 }
-            if len(this_sent_candidates) >= 15:
+            if len(this_sent_candidates) >= 20: # Increased limit
                 break
         
         items.append({
@@ -344,9 +357,6 @@ def build_candidates_v2(draft: str, mat, meta, forced_map):
     return items
 
 def call_llm_autolink(draft: str, phrases: list):
-    """
-    Final decision maker.
-    """
     model = genai.GenerativeModel(LLM_MODEL)
     
     payload = {
@@ -354,8 +364,8 @@ def call_llm_autolink(draft: str, phrases: list):
         "phrases": phrases,
         "rules": {
             "max_links": MAX_LINKS_TOTAL,
-            "strategy": "Identify the best matching entities from the candidates list for the text. Prefer Companies. Link phrases that clearly refer to the candidate. Return a JSON List of objects.",
-            "output_format": [{"anchor": "exact literal substring from text", "url": "target url"}]
+            "strategy": "Select the correct URL for entities in the text. Return a list of insertions.",
+            "output_format": [{"anchor": "exact text to link", "url": "url"}]
         }
     }
 
@@ -372,61 +382,95 @@ def call_llm_autolink(draft: str, phrases: list):
             "prompt_tokens": resp.usage_metadata.prompt_token_count,
             "completion_tokens": resp.usage_metadata.candidates_token_count
         }
-        
-        if isinstance(raw, list):
-            return {"insertions": raw}, usage
+        if isinstance(raw, list): return {"insertions": raw}, usage
         return raw, usage
-        
-    except Exception as e:
+    except Exception:
         return {"insertions": []}, {"prompt_tokens":0, "completion_tokens":0}
 
 def apply_insertions(html: str, insertions: list) -> str:
-    # De-duplicate by URL
-    seen_urls = set()
-    cleaned_ins = []
+    """
+    Robust insertion that prevents replacing text inside existing HTML tags.
+    """
+    # 1. De-duplicate and validate
+    valid_ins = []
+    seen = set()
+    for ins in insertions:
+        u, a = ins.get('url'), ins.get('anchor')
+        if not u or not a: continue
+        if u in seen: continue
+        seen.add(u)
+        valid_ins.append(ins)
     
-    # Sort insertions by anchor length descending to prefer longer matches first
-    # This prevents replacing "Foobar" inside "Foobar Inc" incorrectly if "Foobar" is processed first
-    # Safely get anchor, default to empty string
-    sorted_insertions = sorted(insertions, key=lambda x: len(x.get("anchor", "") or ""), reverse=True)
+    # Sort by anchor length (longest first)
+    valid_ins.sort(key=lambda x: len(x['anchor']), reverse=True)
     
-    for ins in sorted_insertions:
-        # Safety check for keys
-        url = ins.get('url')
-        anchor = ins.get('anchor')
-        
-        if not url or not anchor: 
-            continue
-            
-        if url in seen_urls: continue
-        seen_urls.add(url)
-        cleaned_ins.append(ins)
-        
-    for ins in cleaned_ins:
-        anchor = ins.get("anchor", "").strip()
-        url = ins.get("url", "").strip()
-        if not anchor or not url: continue
-        
-        # Regex replacement to ensure we don't link inside existing tags
-        # (Very basic protection)
+    # 2. Split into tokens (tags vs text)
+    # This splits by tags, e.g. "Foo <b>Bar</b>" -> ['Foo ', '<b>', 'Bar', '</b>', '']
+    tokens = re.split(r'(<[^>]+>)', html)
+    
+    # 3. Perform replacement ONLY on text tokens
+    for ins in valid_ins:
+        anchor = ins['anchor']
+        url = ins['url']
         pattern = re.compile(re.escape(anchor), re.IGNORECASE)
         
-        def repl(m):
-            # Check if we are inside a tag (simplistic check: count < vs > before match)
-            # This is not perfect but better than nothing
-            # For this quick tool, we just do direct replacement 
-            # assuming the draft is plain text initially
-            return f'<a href="{url}">{m.group(0)}</a>'
+        found = False
+        for i, token in enumerate(tokens):
+            # If it's a tag (starts with <), skip
+            if token.startswith('<'):
+                continue
+                
+            # If we already found this link (prevent duplicates), skip? 
+            # (Requirement: "no_duplicate_urls" usually implies 1 link per URL globally)
+            # If we want to link ALL occurrences, remove `found` check.
+            # But normally we link the first occurrence.
+            if found: break
             
-        html = pattern.sub(repl, html, count=1)
+            # Search in text token
+            if pattern.search(token):
+                # Replace ONLY the first occurrence in this token
+                # Check if it's already linked? No, `token` is pure text outside tags.
+                # BUT, wait - if we have "Safe <a href='...'>Safe</a>", tokens are "Safe ", "<a>", "Safe", "</a>".
+                # We won't accidentally link inside the href.
+                
+                # We use a placeholder to avoid re-matching inside this loop iteration accidentally
+                # though regex logic on static string is fine, but placeholder is safer for final reassembly
+                
+                new_token = pattern.sub(f'__LINK_PLACEHOLDER_{url}__', token, count=1)
+                if new_token != token:
+                    tokens[i] = new_token
+                    found = True # Link matched for this URL
+                    
+    # 4. Reassemble and fill placeholders
+    # This avoids nested tag issues completely because we never insert valid HTML until the very end.
+    final_html = "".join(tokens)
+    
+    for ins in valid_ins:
+        url = ins['url']
+        anchor = ins['anchor']
+        placeholder = f'__LINK_PLACEHOLDER_{url}__'
+        link_html = f'<a href="{url}">{anchor}</a>'
+        final_html = final_html.replace(placeholder, link_html)
         
-    return html
+    return final_html
+
+def remove_link_from_html(html, url_to_remove):
+    # Simplistic removal: replace <a href="TARGET">Anchor</a> with Anchor
+    # Regex needs to be robust to attributes order, but we control the insertion format mostly.
+    # We'll valid lenient regex.
+    pattern = re.compile(rf'<a\s+href="{re.escape(url_to_remove)}"[^>]*>(.*?)</a>', re.IGNORECASE | re.DOTALL)
+    return pattern.sub(r'\1', html)
+
+def extract_links_for_ui(html):
+    return [
+        {"url": m.group(1), "anchor": m.group(2)}
+        for m in re.finditer(r'<a href="([^"]+)">(.*?)</a>', html)
+    ]
 
 # ==================================================
 # UI Layout
 # ==================================================
 
-# Function to update session state when editor changes
 def update_result_html():
     st.session_state.result["html"] = st.session_state.editor_content
 
@@ -448,7 +492,6 @@ def main():
         mat, meta = load_data()
         if mat is None:
             st.error("⚠️ Knowledge base not found.")
-            # st.stop() 
         else:
             st.success(f"📚 Knowledge Base: {len(meta)} ent.")
         
@@ -505,7 +548,7 @@ def run_autolink_process(draft, mat, meta):
         st.session_state.total_output_tokens += (usage_ner["completion_tokens"] + usage_link["completion_tokens"])
         
         cost_in = (st.session_state.total_input_tokens / 1_000_000) * 0.30
-        cost_out = (st.session_state.total_output_tokens / 1_000_000) * 2.50 # approx blended
+        cost_out = (st.session_state.total_output_tokens / 1_000_000) * 2.50 
         st.session_state.total_cost = cost_in + cost_out
 
         st.session_state.result = {
@@ -513,22 +556,20 @@ def run_autolink_process(draft, mat, meta):
             "phrases": phrases
         }
         
-        status.update(label="✅ Donel!", state="complete", expanded=False)
+        status.update(label="✅ Done!", state="complete", expanded=False)
 
 def render_output_section():
     st.divider()
     st.subheader("🎉 Result")
     
-    # Initialize editor content if strictly necessary, but `key` handles it mostly
     if "editor_content" not in st.session_state:
         st.session_state.editor_content = st.session_state.result["html"]
     
-    c1, c2 = st.columns([0.5, 0.5])
+    # 3 Column Layout for Editor, Preview, Links
+    c1, c2, c3 = st.columns([0.35, 0.35, 0.3])
     
     with c1:
         st.markdown("#### ✏️ Editor (HTML)")
-        # We bind this textarea to `editor_content`
-        # On change, `update_result_html` syncs it back to `result['html']`
         st.text_area(
             "Edit Code", 
             value=st.session_state.result["html"],
@@ -539,12 +580,28 @@ def render_output_section():
         
     with c2:
         st.markdown("#### 👁️ Live Preview")
-        # Use result['html'] which is kept in sync
         html_content = st.session_state.result["html"]
         st.markdown(
             f'<div class="preview-box">{html_content}</div>', 
             unsafe_allow_html=True
         )
+
+    with c3:
+        st.markdown("#### 🔗 Manage Links")
+        links = extract_links_for_ui(st.session_state.result["html"])
+        if not links:
+            st.info("No links found.")
+        else:
+            for i, l in enumerate(links):
+                c_del, c_txt = st.columns([0.2, 0.8])
+                with c_del:
+                    if st.button("🗑️", key=f"del_{i}", help=f"Remove link to {l['url']}"):
+                         new_html = remove_link_from_html(st.session_state.result["html"], l['url'])
+                         st.session_state.result["html"] = new_html
+                         st.session_state.editor_content = new_html # Sync editor
+                         st.rerun()
+                with c_txt:
+                    st.markdown(f"[{l['anchor']}]({l['url']})")
 
 if __name__ == "__main__":
     main()
