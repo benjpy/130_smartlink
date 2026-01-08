@@ -326,7 +326,11 @@ def match_entities_to_db(entities, meta):
         # Helper: is the first word of entity matching the first word of target?
         # ent: "Canyon Energy" -> "canyon"
         # target: "Canyon Magnet Energy" -> "canyon"
-        ent_first = n_ent.split()[0] if n_ent else ""
+        # ent: "NotCo" -> "not co" -> "not"
+        # target: "The Not Company" -> "the" (mismatch) -> we want to skip "the"
+        
+        ent_tokens = n_ent_spaced.split()
+        ent_first = ent_tokens[0] if ent_tokens else ""
         
         # Dedup candidates
         unique_cands = {c['url']: c for c in candidates}
@@ -337,28 +341,31 @@ def match_entities_to_db(entities, meta):
             t_norm = normalize(entity_title_from_url(url))
             
             # Base SCORE: Fuzzy match
-            # Compare "not co" vs "the not company"
             score = difflib.SequenceMatcher(None, n_ent_spaced, t_norm).ratio()
             
-            # BONUS: First Word Match
-            # If the first significant word of the entity matches a word in the title
+            # Smart First Word Match
+            # Strip "the " from title for comparison
+            t_clean = re.sub(r'^the\s+', '', t_norm)
+            t_first = t_clean.split()[0] if t_clean else ""
+            
+            # BONUS 1: First Word appears in title
             if len(ent_first) >= 3 and ent_first in t_norm:
                 score += 0.15 # Boost
                 
-            # DOUBLE BONUS: If it matches the FIRST word of the title
-            t_first = t_norm.split()[0] if t_norm else ""
+            # BONUS 2: First Word is the SAME as Title's First Word (ignoring 'The')
             if len(ent_first) >= 3 and ent_first == t_first:
-                score += 0.2
+                score += 0.3 # Bigger Boost
             
             if score > best_score:
                 best_score = score
                 best_row = row
         
         # Threshold Logic
-        # If we have a First Word Match, we can be much looser on the rest.
-        # "Canyon Energy" (canyon match) vs "Canyon Magnet" -> Score might be 0.6 + 0.35 boost = 0.95.
         threshold = 0.6
-        if len(ent_first) >= 3: threshold = 0.5 
+        # If we have a Strong First Word Match (bonus 2 applied), we trust it more
+        # "Canyon" (ent) vs "Canyon Magnet" (title)
+        # Score ~0.5 + 0.15 + 0.3 = 0.95
+        if len(ent_first) >= 3: threshold = 0.45 
         
         if best_score > threshold: 
             forced[best_row["url"]] = {"row": best_row, "alias": ent}
