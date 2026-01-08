@@ -34,7 +34,8 @@ h1, h2, h3, h4, h5, h6 {
     letter-spacing: -0.02em !important;
 }
 
-h1 {
+/* Only style the Main Page Title as massive */
+.main .block-container > div > div > div > h1 {
     font-weight: 800 !important;
     font-size: 4rem !important; /* MASSIVE Title */
     background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
@@ -42,6 +43,14 @@ h1 {
     -webkit-text-fill-color: transparent;
     padding-bottom: 1rem !important;
     margin-bottom: 3rem !important;
+}
+
+/* Ensure Sidebar H1/H2 are smaller if used */
+[data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2 {
+    font-size: 2rem !important;
+    background: none !important;
+    -webkit-text-fill-color: #0f172a !important;
+    color: #0f172a !important;
 }
 
 h2 { font-size: 2.5rem !important; font-weight: 700 !important; margin-top: 2.5rem !important; }

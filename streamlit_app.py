@@ -39,7 +39,7 @@ if mat is None:
 
 # SIDEBAR
 with st.sidebar:
-    st.title("📊 Session Stats")
+    st.markdown("## 📊 Stats") # Use H2/Markdown to avoid massive H1 style
     
     st.markdown(f"""
     <div style="background:#e0e7ff; padding:15px; border-radius:10px; border:1px solid #c7d2fe;">
@@ -84,9 +84,9 @@ with col2:
                 st.write("📂 Mapping to Knowledge Base...")
                 forced_map, trace_log = match_entities_to_db(entities, meta)
                 
-                # DEBUG TRACE
+                # DEBUG TRACE -> Render as code block for readability
                 with st.expander("Debugging Trace"):
-                    st.write(trace_log)
+                    st.code("\n".join(trace_log), language="text")
                 
                 st.write("🧠 Building Semantic Candidates...")
                 phrases = build_candidates(draft_input, mat, meta, forced_map)
@@ -108,7 +108,16 @@ with col2:
                 # B. Forced
                 for url, data in forced_map.items():
                     alias = data['alias']
+                    # ROBUST MERGE CHECK:
+                    # If regex fails, fall back to simple string check.
+                    # This ensures "Samphire" matches even if regex is finicky.
+                    found_match = False
                     if re.search(re.escape(alias), draft_input, re.IGNORECASE):
+                        found_match = True
+                    elif alias.lower() in draft_input.lower():
+                        found_match = True
+                        
+                    if found_match:
                         self_ins = {"anchor": alias, "url": url, "source": "forced"}
                         if url in candidates_map:
                             if len(alias) > len(candidates_map[url]['anchor']):
