@@ -630,23 +630,44 @@ def run_autolink_process(draft, mat, meta):
         # 5. POST-PROCESS: Force Fallback Links
         # Verification: Check if anchors actually exist in draft
         handled_urls = set()
+        
+        # DEBUG: Fallback Analysis
+        fallback_debug = []
+        
         for ins in insertions:
             anchor = ins.get("anchor")
+            url = ins.get("url")
+            # Loose check: if anchor is in draft (case insensitive)
+            exists = False
             if anchor and re.search(re.escape(anchor), draft, re.IGNORECASE):
-                handled_urls.add(ins.get("url"))
+                exists = True
+                handled_urls.add(url)
+            fallback_debug.append(f"LLM Link: '{anchor}' ({url}) -> Exists in Text? {exists}")
         
         fallback_insertions = []
         for url, data in forced_map.items():
             if url not in handled_urls:
                 alias = data['alias']
                 # Case-insensitive check for alias in draft
-                if re.search(re.escape(alias), draft, re.IGNORECASE):
+                found_in_draft = re.search(re.escape(alias), draft, re.IGNORECASE)
+                
+                fallback_debug.append(f"Checking Fallback: '{alias}' ({url}) -> Handled? No. Found in draft? {bool(found_in_draft)}")
+                
+                if found_in_draft:
                     fallback_insertions.append({
                         "anchor": alias,
                         "url": url,
                         "is_fallback": True
                     })
                     st.toast(f"Force-linked: {alias}", icon="⚡")
+            else:
+                fallback_debug.append(f"Checking Fallback: '{data['alias']}' -> Already Handled by LLM.")
+        
+        if fallback_debug:
+             with st.expander("🛠️ Debug: Linking Logic", expanded=True):
+                 st.write(fallback_debug)
+                 st.write("Final Insertions:", insertions + fallback_insertions)
+
         
         final_insertions = insertions + fallback_insertions
         
