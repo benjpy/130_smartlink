@@ -293,6 +293,7 @@ def render_output_section():
         
     # DEBUG SECTION (Temporary)
     with st.expander("🛠️ Debug: LLM Input Data"):
+        st.write("Regex Raw Matches:", st.session_state.get("debug_regex", []))
         if st.session_state.result:
             st.write("NER Entities:", st.session_state.result.get("entities", []))
             st.write("Matched Entities (Forced Map):", [f"{k} -> {v['row']['url']}" for k,v in st.session_state.result.get("forced_map", {}).items()])
@@ -395,6 +396,10 @@ def identify_entities_with_llm(draft: str):
              entities.append(m)
              
     # Also catch CamelCase explicitly? "NotCo" is matched by [A-Z][a-zA-Z0-9]+
+    
+    # DEBUG: Attach to session state if possible (hacky but needed)
+    if "debug_regex" not in st.session_state: st.session_state.debug_regex = []
+    st.session_state.debug_regex = regex_matches
     
     return entities, usage
 
