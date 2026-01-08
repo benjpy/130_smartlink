@@ -459,7 +459,7 @@ def call_llm_autolink(draft: str, phrases: list):
         "phrases": phrases,
         "rules": {
             "max_links": MAX_LINKS_TOTAL,
-            "strategy": "Select the correct URL for entities in the text using the provided candidates. IMPORTANT: matches provided in the candidates list with 'matched_via' are HIGH CONFIDENCE partial matches (e.g. 'Canyon Energy' -> 'Canyon Magnet') and SHOULD be linked if the context supports it.",
+            "strategy": "Your Goal: Link entity names to their Best Match URL from the Candidates. \n1. REQUIRED: If a candidate has 'matched_via', you MUST link it. \n2. Even if the text is 'Samphire' and the URL is '.../samphire-neuroscience/', LINK IT. \n3. Prefer Companies over Posts.",
             "output_format": [{"anchor": "exact literal substring from text", "url": "target url"}]
         }
     }
