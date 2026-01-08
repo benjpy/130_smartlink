@@ -2,6 +2,7 @@ import csv
 import os
 import re
 import json
+import time
 import numpy as np
 import streamlit as st
 import warnings
@@ -35,8 +36,10 @@ if not api_key:
 genai.configure(api_key=api_key)
 
 st.set_page_config(
-    page_title="Internal Linking Assistant — LLM Auto-Link",
-    layout="wide"
+    page_title="SmartLink — AI Auto-Linker",
+    page_icon="🔗",
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
 # ==================================================
@@ -52,484 +55,463 @@ if "total_cost" not in st.session_state:
     st.session_state.total_cost = 0.0
 
 # ==================================================
-# CSS — FORCE LIGHT THEME
+# CSS — MODERN UI
 # ==================================================
 st.markdown("""
 <style>
-html, body, .stApp {
-    background:#ffffff !important;
-    color:#111111 !important;
-    font-size:22px !important;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+html, body, [class*="css"] {
+    font-family: 'Inter', sans-serif;
 }
-.block-container {
-    max-width:1500px;
-    padding:3rem 0 4rem;
+
+.stApp {
+    background-color: #f8fafc;
 }
-div[data-baseweb="textarea"] textarea,
-div[data-baseweb="textarea"] * {
-    background:#ffffff !important;
-    color:#111111 !important;
-    font-size:20px !important;
-    line-height:1.75 !important;
+
+/* Headings */
+h1, h2, h3 {
+    color: #0f172a;
+    font-weight: 700;
+    letter-spacing: -0.025em;
 }
+
+/* Buttons */
 div.stButton > button {
-    background:#2563eb !important;
-    color:#ffffff !important;
-    font-size:18px !important;
-    font-weight:600 !important;
-    border-radius:14px !important;
-    border:none !important;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+    transition: all 0.2s;
 }
 div.stButton > button:hover {
-    background:#1e40af !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 8px -1px rgba(37, 99, 235, 0.3);
 }
-button.remove-btn {
-    background:#ef4444 !important;
+
+/* Text Areas */
+div[data-baseweb="textarea"] {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 2px;
 }
-.helper {
-    font-size:17px;
-    color:#6b7280;
+div[data-baseweb="textarea"]:focus-within {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
-button[data-baseweb="tab"] div p,
-button[data-baseweb="tab"] p {
+
+/* Status Container */
+div[data-testid="stStatusWidget"] {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background-color: white;
+    border-right: 1px solid #f1f5f9;
+}
+
+/* Cards/Containers */
+.css-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1rem;
+}
+
+/* Custom classes for output */
+.preview-box {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    font-family: serif; /* Simulate reader view */
+    line-height: 1.8;
+    color: #333;
+}
 </style>
 """, unsafe_allow_html=True)
 
 # ==================================================
-# Helpers
+# Helpers: Data & Embedding
 # ==================================================
 @st.cache_resource
-def load_embeddings_v2():
+def load_data():
+    if not os.path.exists(EMB_PATH) or not os.path.exists(META_PATH):
+        return None, None
+        
     mat = np.load(EMB_PATH).astype(np.float32)
     mat = np.nan_to_num(mat, copy=False)
     norm = np.linalg.norm(mat, axis=1, keepdims=True)
-    # Avoid division by zero
     mat = np.divide(mat, norm, out=np.zeros_like(mat), where=norm!=0)
+    
     with open(META_PATH, newline="", encoding="utf-8") as f:
         meta = list(csv.DictReader(f))
     return mat, meta
 
 def batch_embed(texts: list) -> np.ndarray:
-    if not texts:
-        return np.array([])
-    # Handle batch embedding
-    # Note: embed_content can take a list. 
-    # Check your library version if 'content' vs 'texts' is needed, but 'content' usually works for list.
+    if not texts: return np.array([])
     resp = genai.embed_content(model=EMBED_MODEL, content=texts)
     embeddings = resp["embedding"]
-    
     mat = np.array(embeddings, dtype=np.float32)
     mat = np.nan_to_num(mat, copy=False)
-    
-    # Safe normalization
     norm = np.linalg.norm(mat, axis=1, keepdims=True)
-    # Replace zero norms with 1 to avoid division by zero (result remains 0 vector)
     norm[norm == 0] = 1.0
     mat = mat / norm
-    
     return mat
 
 def normalize(text: str) -> str:
     return re.sub(r"[^a-z0-9 ]+", "", text.lower())
 
 def split_sentences(text: str):
+    # Quick heuristic split
     return [
-        s.strip()
-        for s in re.split(r'(?<=[.!?])\s+', text)
-        if len(s.strip()) >= 30
+        s.strip() for s in re.split(r'(?<=[.!?])\s+', text)
+        if len(s.strip()) >= 20
     ][:MAX_SENTENCES]
 
 def entity_title_from_url(url: str):
     return url.rstrip("/").split("/")[-1].replace("-", " ")
 
 # ==================================================
-# Deterministic company auto-linking
+# Core Logic: NER & Linking
 # ==================================================
-def auto_link_companies(draft: str, meta):
-    out = draft
-    for row in meta:
-        if row.get("content_type") != "company":
-            continue
-        name = entity_title_from_url(row["url"])
-        pat = re.compile(rf"\b{re.escape(name)}\b", re.IGNORECASE)
-        m = pat.search(out)
-        if not m:
-            continue
-        if out[:m.start()].count("<a ") > out[:m.start()].count("</a>"):
-            continue
-        anchor = out[m.start():m.end()]
-        out = out[:m.start()] + f'<a href="{row["url"]}">{anchor}</a>' + out[m.end():]
-    return out
 
-def extract_links_from_html(html: str):
-    return [
-        {"url": m.group(1), "anchor": m.group(2)}
-        for m in re.finditer(r'<a href="([^"]+)">(.*?)</a>', html)
-    ]
-
-def remove_link(html: str, url: str, anchor: str):
-    return re.sub(
-        re.escape(f'<a href="{url}">{anchor}</a>'),
-        anchor,
-        html,
-        count=1
-    )
-
-def format_url_display(url: str) -> str:
-    if "/company/" in url:
-        slug = url.split("/company/")[-1]
-        if slug.endswith("/"): slug = slug[:-1]
-        return f"**[Company]** {slug}"
+def identify_entities_with_llm(draft: str):
+    """
+    Step 1: Ask LLM to extract potential company names from the text.
+    This acts as a smart filter before we even look at our database.
+    """
+    model = genai.GenerativeModel(LLM_MODEL)
+    prompt = f"""
+    Analyze the following text and identify all 'Company' or 'Organization' names mentioned.
+    Return ONLY a JSON list of strings. Do not include extra text.
     
-    # Fallback / News
-    parts = url.strip("/").split("/")
-    slug = parts[-1] if parts else url
-    return f"**[News]** {slug}"
+    Text:
+    {draft[:8000]}
+    """
+    
+    try:
+        resp = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
+        entities = json.loads(resp.text)
+        
+        usage = {
+            "prompt_tokens": resp.usage_metadata.prompt_token_count,
+            "completion_tokens": resp.usage_metadata.candidates_token_count
+        }
+        return entities, usage
+    except Exception as e:
+        # st.error(f"NER Error: {e}")
+        return [], {"prompt_tokens":0, "completion_tokens":0}
 
-
-# ==================================================
-# Candidate building (with forced entity matches)
-# ==================================================
-def force_explicit_entity_matches(sentence: str, meta):
-    sent_norm = normalize(sentence)
+def match_entities_to_db(entities, meta):
+    """
+    Step 2: Map extracted names to our existing URLs in 'meta'.
+    """
     forced = {}
     
-    # Common stopwords to ignore in matching
-    STOPWORDS = {
-        "the", "be", "to", "of", "and", "a", "in", "that", "have", "i", 
-        "it", "for", "not", "on", "with", "he", "as", "you", "do", "at", 
-        "this", "but", "his", "by", "from", "they", "we", "say", "her", 
-        "she", "or", "an", "will", "my", "one", "all", "would", "there", 
-        "their", "what", "so", "up", "out", "if", "about", "who", "get", 
-        "which", "go", "me", "when", "make", "can", "like", "time", "no", 
-        "just", "him", "know", "take", "people", "into", "year", "your", 
-        "good", "some", "could", "them", "see", "other", "than", "then", 
-        "now", "look", "only", "come", "its", "over", "think", "also", 
-        "back", "after", "use", "two", "how", "our", "work", "first", 
-        "well", "way", "even", "new", "want", "because", "any", "these", 
-        "give", "day", "most", "us"
-    }
-
+    # Pre-index meta by normalized title for O(1) lookup
+    meta_index = {}
     for row in meta:
         title = entity_title_from_url(row["url"])
-        title_norm = normalize(title)
+        norm_title = normalize(title)
+        meta_index[norm_title] = row
+        # distinct words index for partial
+        for w in norm_title.split():
+            if len(w) > 4: # index significant words
+                if w not in meta_index: meta_index[w] = []
+                if isinstance(meta_index[w], list): meta_index[w].append(row)
+
+    for ent in entities:
+        if not isinstance(ent, str): continue
+        n_ent = normalize(ent)
         
-        # Split into tokens & filter stopwords
-        t_tokens = set(w for w in title_norm.split() if w not in STOPWORDS)
-        s_tokens = set(w for w in sent_norm.split() if w not in STOPWORDS)
-        shared = t_tokens & s_tokens
-        
-        match = False
-        # Rule 1: 2+ shared words (strong match)
-        if len(shared) >= 2:
-            match = True
-        # Rule 2: 1 shared word, but it's a "unique" name (heuristic)
-        # Word must be >= 5 chars (avoids 'fund', 'team', 'flow')
-        # Entity title must be short (<= 3 words) to avoid matching long sentences
-        elif len(shared) == 1:
-            w = list(shared)[0]
-            if len(w) >= 5 and len(t_tokens) <= 3:
-                match = True
-                
-        if match:
-            forced[row["url"]] = {
-                "url": row["url"],
-                "title": title,
-                "type": row.get("content_type", ""),
-                "score": 1.0,
-                "is_strong_match": True
-            }
+        # 1. Exact match on full slug
+        if n_ent in meta_index and isinstance(meta_index[n_ent], dict):
+            row = meta_index[n_ent]
+            forced[row["url"]] = row
+            continue
+            
+        # 2. Heuristic partial match
+        # If the entity is "Orbit Fab" and we have "orbit-fab", normalize matches.
+        # If entity is "HAX" and we have "hax", matches.
+        # Check against list buckets
+        found = False
+        parts = n_ent.split()
+        for p in parts:
+            if len(p) > 4 and p in meta_index and isinstance(meta_index[p], list):
+                # We have candidates containing this word
+                for candidate_row in meta_index[p]:
+                    cand_title = entity_title_from_url(candidate_row["url"])
+                    # Simple inclusion check
+                    if normalize(cand_title) in n_ent or n_ent in normalize(cand_title):
+                        forced[candidate_row["url"]] = candidate_row
+                        found = True
+                        break
+            if found: break
+            
     return forced
 
-def build_candidates(draft: str, mat, meta):
+def build_candidates_v2(draft: str, mat, meta, forced_map):
     sentences = split_sentences(draft)
     items = []
-    
-    if not sentences:
-        return []
+    if not sentences: return []
 
-    # Batch embed all sentences
-    # Returns (N_sentences, D_embedding)
+    # Embed sentences
     try:
         sent_embeddings = batch_embed(sentences)
     except Exception as e:
-        st.error(f"Embedding failed: {e}")
         return []
 
-    # Vectorized scoring: (N_docs, D) @ (N_sents, D).T -> (N_docs, N_sents)
-    # Transpose result to get (N_sents, N_docs)
-    # Pre-calculate indices by type to speed up filtering if needed, 
-    # but iterating sorted results is usually fine for this dataset size.
+    # Scores
     all_scores = (mat @ sent_embeddings.T).T 
     
-    LIMIT_PER_TYPE = 10
-
     for i, sent in enumerate(sentences):
         pid = i + 1
-        scores = all_scores[i]  # Scores for this sentence against all docs
+        scores = all_scores[i]
         
-        # 1. Force explicitly matched entities
-        forced = force_explicit_entity_matches(sent, meta)
+        # 1. Add Forced/NER matches if present in this sentence
+        sent_norm = normalize(sent)
+        this_sent_candidates = {}
         
-        # 2. Get top candidates globally -> filter into buckets
-        top_idx = np.argsort(-scores)[:500]
-        
-        buckets = {"company": [], "event": [], "post": []}
-        
+        for url, row in forced_map.items():
+            title = entity_title_from_url(url)
+            # Check if this forced entity is actually in this sentence string
+            if normalize(title) in sent_norm:
+                 this_sent_candidates[url] = {
+                    "url": url,
+                    "title": title,
+                    "type": row.get("content_type", "company"),
+                    "score": 1.0,
+                    "is_strong_match": True
+                }
+
+        # 2. Add Top Semantic Matches
+        top_idx = np.argsort(-scores)[:50]
         for idx in top_idx:
             row = meta[idx]
-            ctype = row.get("content_type", "post")
-            if ctype not in buckets: ctype = "post"
-            
-            if len(buckets[ctype]) < LIMIT_PER_TYPE:
-                buckets[ctype].append({
-                    "url": row["url"],
-                    "title": entity_title_from_url(row["url"]),
-                    "type": row.get("content_type", ""),
+            url = row["url"]
+            if url not in this_sent_candidates:
+                this_sent_candidates[url] = {
+                    "url": url,
+                    "title": entity_title_from_url(url),
+                    "type": row.get("content_type", "post"),
                     "score": float(scores[idx]),
                     "is_strong_match": False
-                })
-            if all(len(b) >= LIMIT_PER_TYPE for b in buckets.values()):
+                }
+            if len(this_sent_candidates) >= 15:
                 break
-
-        # 3. Merge
-        final_candidates = {}
-        for url, obj in forced.items():
-            final_candidates[url] = obj
-            
-        for ctype in ["company", "event", "post"]:
-            for cand in buckets[ctype]:
-                if cand["url"] not in final_candidates:
-                    final_candidates[cand["url"]] = cand
         
         items.append({
             "phrase_id": pid,
             "sentence": sent,
-            "candidates": list(final_candidates.values())
+            "candidates": list(this_sent_candidates.values())
         })
 
     return items
 
-# ==================================================
-# LLM call (NORMALIZED OUTPUT)
-# ==================================================
-def call_llm_autolink(draft: str, phrases: list, mode: str = "mixed"):
-    # mode: 'mixed', 'companies_only', 'content_only'
-    
-    # Filter candidates based on mode
-    filtered_phrases = []
-    for p in phrases:
-        s_candidates = []
-        for c in p["candidates"]:
-            ctype = c.get("type", "post")
-            if mode == "companies_only":
-                if ctype == "company":
-                    s_candidates.append(c)
-            elif mode == "content_only":
-                if ctype != "company":
-                    s_candidates.append(c)
-            else:
-                s_candidates.append(c)
-        
-        if s_candidates:
-            filtered_phrases.append({
-                "phrase_id": p["phrase_id"],
-                "sentence": p["sentence"],
-                "candidates": s_candidates
-            })
-
-    if not filtered_phrases:
-        return {"insertions": []}, {"prompt_tokens": 0, "completion_tokens": 0}
-
+def call_llm_autolink(draft: str, phrases: list):
+    """
+    Final decision maker.
+    """
     model = genai.GenerativeModel(LLM_MODEL)
-
-    instruction = "Link entities to their URLs."
-    if mode == "companies_only":
-        instruction = "Link ONLY Companies. Ignore interactions, just identify company names and link them."
-    elif mode == "content_only":
-        instruction = "Link ONLY Events and Posts (News, Blogs). Do NOT link Companies."
     
-    # Build Prompt
     payload = {
         "draft": draft,
-        "phrases": filtered_phrases,
+        "phrases": phrases,
         "rules": {
             "max_links": MAX_LINKS_TOTAL,
-            "no_duplicate_urls": True,
-            "use_exact_anchor_text": False,
-            "linking_strategy": instruction
+            "strategy": "Identify the best matching entities from the candidates list for the text. Prefer Companies. Link phrases that clearly refer to the candidate. ONLY return the JSON."
         }
     }
 
-    resp = model.generate_content(
-        json.dumps(payload),
-        generation_config=genai.GenerationConfig(
-            temperature=0.2,
-            response_mime_type="application/json"
+    try:
+        resp = model.generate_content(
+            json.dumps(payload),
+            generation_config=genai.GenerationConfig(
+                temperature=0.1,
+                response_mime_type="application/json"
+            )
         )
-    )
-
-    raw = json.loads(resp.text)
-
-
-    
-    usage = {
-        "prompt_tokens": resp.usage_metadata.prompt_token_count,
-        "completion_tokens": resp.usage_metadata.candidates_token_count
-    }
-
-    # ✅ NORMALIZE GEMINI OUTPUT
-    if isinstance(raw, list):
-        return {"insertions": raw}, usage
-    if isinstance(raw, dict):
+        raw = json.loads(resp.text)
+        usage = {
+            "prompt_tokens": resp.usage_metadata.prompt_token_count,
+            "completion_tokens": resp.usage_metadata.candidates_token_count
+        }
+        
+        if isinstance(raw, list):
+            return {"insertions": raw}, usage
         return raw, usage
+        
+    except Exception as e:
+        return {"insertions": []}, {"prompt_tokens":0, "completion_tokens":0}
 
-    raise ValueError("Unexpected LLM output format")
+def apply_insertions(html: str, insertions: list) -> str:
+    # De-duplicate by URL
+    seen_urls = set()
+    cleaned_ins = []
+    
+    # Sort insertions by anchor length descending to prefer longer matches first
+    # This prevents replacing "Foobar" inside "Foobar Inc" incorrectly if "Foobar" is processed first
+    sorted_insertions = sorted(insertions, key=lambda x: len(x.get("anchor", "")), reverse=True)
+    
+    for ins in sorted_insertions:
+        if ins['url'] in seen_urls: continue
+        seen_urls.add(ins['url'])
+        cleaned_ins.append(ins)
+        
+    for ins in cleaned_ins:
+        anchor = ins.get("anchor", "").strip()
+        url = ins.get("url", "").strip()
+        if not anchor or not url: continue
+        
+        # Regex replacement to ensure we don't link inside existing tags
+        # (Very basic protection)
+        pattern = re.compile(re.escape(anchor), re.IGNORECASE)
+        
+        def repl(m):
+            # Check if we are inside a tag (simplistic check: count < vs > before match)
+            # This is not perfect but better than nothing
+            # For this quick tool, we just do direct replacement 
+            # assuming the draft is plain text initially
+            return f'<a href="{url}">{m.group(0)}</a>'
+            
+        html = pattern.sub(repl, html, count=1)
+        
+    return html
 
 # ==================================================
-# UI
+# UI Layout
 # ==================================================
-st.markdown("## 🔗 Internal Linking Assistant — LLM Auto-Link")
 
-draft = st.text_area("Draft", height=420)
+# Function to update session state when editor changes
+def update_result_html():
+    st.session_state.result["html"] = st.session_state.editor_content
 
-st.markdown(
-    '<div class="helper">Uses Gemini 2.5 Flash to select links and anchors.</div>',
-    unsafe_allow_html=True
-)
+def main():
+    st.title("🔗 SmartLink")
+    st.markdown("Automated internal linking powered by **Gemini 2.5** and semantic search.")
+    
+    # Layout
+    col_input, col_controls = st.columns([0.65, 0.35])
+    
+    with col_input:
+        st.subheader("📝 Draft Content")
+        draft = st.text_area("Paste your article here", height=300, key="draft_input", label_visibility="collapsed", placeholder="New startup taking over the world...")
 
-col1, col2 = st.columns(2)
+    with col_controls:
+        st.subheader("⚙️ Controls")
+        
+        # Load Data
+        mat, meta = load_data()
+        if mat is None:
+            st.error("⚠️ Knowledge base not found.")
+            # st.stop() 
+        else:
+            st.success(f"📚 Knowledge Base: {len(meta)} ent.")
+        
+        links_mode = st.radio("Link Types", ["Mixed", "Companies Only", "Content Only"], horizontal=True)
+        
+        if st.button("✨ Auto-Link Draft", use_container_width=True):
+            if not draft:
+                st.toast("Please enter some text first!", icon="⚠️")
+            else:
+                run_autolink_process(draft, mat, meta)
 
-if col1.button("Auto-link with Gemini"):
-    if not draft.strip():
-        st.warning("Paste a draft first.")
-    else:
-        with st.status("Starting Auto-Link Process...", expanded=True) as status:
-            import time
-            
-            st.write("💾 Loading knowledge base...")
-            time.sleep(0.8)
-            mat, meta = load_embeddings_v2()
-            
-            st.write("🕵️‍♀️ Scanning for direct matches...")
-            time.sleep(0.8)
-            html = auto_link_companies(draft, meta)
-            
-            st.write("🧠 Analyzing semantic context & building candidates...")
-            time.sleep(0.8)
-            phrases = build_candidates(html, mat, meta)
-            candidate_count = sum(len(p['candidates']) for p in phrases)
-            st.write(f"   — Found {candidate_count} potential links across {len(phrases)} segments.")
-            
+    # Output Section
+    if st.session_state.result:
+        render_output_section()
 
-            
-            st.write("🔮 Phase 1: Linking Companies (Prioritized)...")
-            time.sleep(0.5)
-            resp_c, usage_c = call_llm_autolink(html, phrases, mode="companies_only")
-            
-            st.write("🔮 Phase 2: Linking Events & Posts (Contextual)...")
-            time.sleep(0.5)
-            resp_e, usage_e = call_llm_autolink(html, phrases, mode="content_only")
-            
-            # Merge usages
-            usage = {
-                "prompt_tokens": usage_c["prompt_tokens"] + usage_e["prompt_tokens"],
-                "completion_tokens": usage_c["completion_tokens"] + usage_e["completion_tokens"]
-            }
-            
-            # Merge insertions
-            all_insertions = resp_c.get("insertions", []) + resp_e.get("insertions", [])
-            llm_resp = {"insertions": all_insertions}
-            
-            # Update Cost (Gemini 2.5 Flash Pricing as proxy for 2.5)
-            # Input: $0.3 / 1M tokens
-            # Output: $2.50 / 1M tokens
-            cost_input = (usage["prompt_tokens"] / 1_000_000) * 0.3
-            cost_output = (usage["completion_tokens"] / 1_000_000) * 2.50
-            total_cost = cost_input + cost_output
-            
-            st.session_state.total_input_tokens += usage["prompt_tokens"]
-            st.session_state.total_output_tokens += usage["completion_tokens"]
-            st.session_state.total_cost += total_cost
-            
-            st.write("✨ Finalizing link insertions...")
-            for ins in llm_resp.get("insertions", []):
-                anchor = ins.get("anchor", "").strip()
-                url = ins.get("url", "").strip()
-                if not anchor or not url:
-                    continue
-                m = re.search(re.escape(anchor), html)
-                if not m:
-                    continue
-                if html[:m.start()].count("<a ") > html[:m.start()].count("</a>"):
-                    continue
-                html = html[:m.start()] + f'<a href="{url}">{anchor}</a>' + html[m.end():]
-            
-            status.update(label="✅ Auto-linking Complete!", state="complete", expanded=False)
+    # Sidebar Footer
+    with st.sidebar:
+        st.markdown("### 📊 Session Stats")
+        st.info(f"Cost: **${st.session_state.total_cost:.4f}**")
+        st.text(f"In: {st.session_state.total_input_tokens:,}")
+        st.text(f"Out: {st.session_state.total_output_tokens:,}")
+        
+        if st.button("Reset Stats"):
+            st.session_state.total_cost = 0.0
+            st.session_state.total_input_tokens = 0
+            st.session_state.total_output_tokens = 0
+            st.rerun()
 
-            st.session_state.result = {"html": html, "phrases": phrases}
+def run_autolink_process(draft, mat, meta):
+    with st.status("🚀 Processing...", expanded=True) as status:
+        
+        # 1. NER
+        st.write("🔍 Identifying Key Entities (LLM)...")
+        entities, usage_ner = identify_entities_with_llm(draft)
+        st.write(f"   — Found: {', '.join(entities)}")
+        
+        # 2. Match to DB
+        st.write("📂 Mapping to Knowledge Base...")
+        forced_map = match_entities_to_db(entities, meta)
+        
+        # 3. Candidates
+        st.write("🧠 Building Semantic Candidates...")
+        phrases = build_candidates_v2(draft, mat, meta, forced_map)
+        
+        # 4. Final Linking
+        st.write("🔗 Generating Links...")
+        resp, usage_link = call_llm_autolink(draft, phrases)
+        
+        # 5. Apply
+        final_html = apply_insertions(draft, resp.get("insertions", []))
+        
+        # Cost Logic
+        st.session_state.total_input_tokens += (usage_ner["prompt_tokens"] + usage_link["prompt_tokens"])
+        st.session_state.total_output_tokens += (usage_ner["completion_tokens"] + usage_link["completion_tokens"])
+        
+        cost_in = (st.session_state.total_input_tokens / 1_000_000) * 0.30
+        cost_out = (st.session_state.total_output_tokens / 1_000_000) * 2.50 # approx blended
+        st.session_state.total_cost = cost_in + cost_out
 
-# Sidebar Cost Tracker
-with st.sidebar:
+        st.session_state.result = {
+            "html": final_html,
+            "phrases": phrases
+        }
+        
+        status.update(label="✅ Donel!", state="complete", expanded=False)
 
-    st.header("💰 Session Cost")
-    st.metric("Total Cost", f"${st.session_state.total_cost:.4f}")
-    st.text(f"Input Tokens: {st.session_state.total_input_tokens:,}")
-    st.text(f"Output Tokens: {st.session_state.total_output_tokens:,}")
-    if st.button("Reset Cost"):
-        st.session_state.total_input_tokens = 0
-        st.session_state.total_output_tokens = 0
-        st.session_state.total_cost = 0.0
-        st.rerun()
-
-if col2.button("Clear"):
-    st.session_state.result = None
-    st.rerun()
-
-# ==================================================
-# Output
-# ==================================================
-if st.session_state.result:
-    html = st.session_state.result["html"]
-    links = extract_links_from_html(html)
-
-    st.markdown("### Output")
-    c1, c2 = st.columns(2, gap="large")
-
+def render_output_section():
+    st.divider()
+    st.subheader("🎉 Result")
+    
+    # Initialize editor content if strictly necessary, but `key` handles it mostly
+    if "editor_content" not in st.session_state:
+        st.session_state.editor_content = st.session_state.result["html"]
+    
+    c1, c2 = st.columns([0.5, 0.5])
+    
     with c1:
-        tab_preview, tab_html = st.tabs(["Rich Text Preview", "HTML Source"])
-        with tab_preview:
-            st.markdown("**Preview (Copyable)**")
-            st.markdown(html, unsafe_allow_html=True)
-        with tab_html:
-            st.markdown("**Final HTML (copy/paste into WordPress)**")
-            st.text_area("HTML Output", html, height=420, label_visibility="collapsed")
-
+        st.markdown("#### ✏️ Editor (HTML)")
+        # We bind this textarea to `editor_content`
+        # On change, `update_result_html` syncs it back to `result['html']`
+        st.text_area(
+            "Edit Code", 
+            value=st.session_state.result["html"],
+            key="editor_content",
+            height=500,
+            on_change=update_result_html
+        )
+        
     with c2:
-        st.markdown("**Selected links**")
-        for i, l in enumerate(links):
-            cols = st.columns([0.15, 0.85])
-            with cols[0]:
-                if st.button("❌", key=f"rm_{i}", help="Remove link"):
-                    html = remove_link(html, l["url"], l["anchor"])
-                    st.session_state.result["html"] = html
-                    st.rerun()
-            with cols[1]:
-                display_text = format_url_display(l["url"])
-                st.markdown(f"{l['anchor']} → {display_text}")
+        st.markdown("#### 👁️ Live Preview")
+        # Use result['html'] which is kept in sync
+        html_content = st.session_state.result["html"]
+        st.markdown(
+            f'<div class="preview-box">{html_content}</div>', 
+            unsafe_allow_html=True
+        )
 
-    # Debug Section
-    with st.expander("🛠️ Debug Info: Link Candidates"):
-        st.write("These are the candidates sent to the LLM for each sentence:")
-        phrases = st.session_state.result.get("phrases", [])
-        
-        debug_text = ""
-        for p in phrases:
-            debug_text += f"\nSentence: {p['sentence']}\n"
-            for c in p['candidates']:
-                score_str = "FORCE" if c['score'] == 1.0 else f"{c['score']:.2f}"
-                strong_mark = "💪" if c.get('is_strong_match') else "  "
-                debug_text += f"  [{score_str}] {strong_mark} {c['type'].upper()} - {c['title']} ({c['url']})\n"
-            debug_text += "-" * 40 + "\n"
-        
-        st.code(debug_text, language="text")
+if __name__ == "__main__":
+    main()
