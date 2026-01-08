@@ -55,88 +55,112 @@ if "total_cost" not in st.session_state:
     st.session_state.total_cost = 0.0
 
 # ==================================================
-# CSS — MODERN UI
+# CSS — MODERN UI (Force Light Theme)
 # ==================================================
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-html, body, [class*="css"] {
-    font-family: 'Inter', sans-serif;
+/* Force Light Theme Base */
+[data-testid="stAppViewContainer"] {
+    background-color: #f8fafc !important;
+    color: #0f172a !important;
 }
 
-.stApp {
-    background-color: #f8fafc;
+[data-testid="stSidebar"] {
+    background-color: #ffffff !important;
+    border-right: 1px solid #e2e8f0 !important;
 }
 
-/* Headings */
-h1, h2, h3 {
-    color: #0f172a;
-    font-weight: 700;
-    letter-spacing: -0.025em;
+html, body, [class*="css"], .stMarkdown, .stText, p, div, label, span, h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', sans-serif !important;
+    color: #0f172a !important;
+}
+
+/* Fix Inputs (Text Area, Inputs) which might default to dark mode styles */
+div[data-baseweb="textarea"], div[data-baseweb="input"] {
+    background-color: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+}
+
+textarea, input {
+    color: #0f172a !important;
+    background-color: #ffffff !important;
+    caret-color: #2563eb !important;
+}
+
+textarea::placeholder, input::placeholder {
+    color: #94a3b8 !important;
+}
+
+/* Radio Buttons & Checkboxes */
+div[role="radiogroup"] label {
+    color: #0f172a !important;
+}
+
+/* Headings specific overrides */
+h1 {
+    font-weight: 800 !important;
+    background: -webkit-linear-gradient(135deg, #2563eb, #1e40af);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem !important;
 }
 
 /* Buttons */
 div.stButton > button {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-weight: 600;
-    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
-    transition: all 0.2s;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+    color: white !important;
+    border: none !important;
+    padding: 0.6rem 1.2rem !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2) !important;
+    transition: all 0.2s !important;
 }
 div.stButton > button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 8px -1px rgba(37, 99, 235, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px -1px rgba(37, 99, 235, 0.3) !important;
+}
+div.stButton > button:active {
+    transform: translateY(0);
 }
 
-/* Text Areas */
-div[data-baseweb="textarea"] {
-    background-color: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 2px;
-}
-div[data-baseweb="textarea"]:focus-within {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
-}
-
-/* Status Container */
+/* Expander & Status */
 div[data-testid="stStatusWidget"] {
-    background-color: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    background-color: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+}
+div[data-testid="stExpander"] {
+    background-color: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
 }
 
-/* Sidebar */
-section[data-testid="stSidebar"] {
-    background-color: white;
-    border-right: 1px solid #f1f5f9;
+/* Code Editorish Look for the HTML Editor */
+.stTextArea textarea {
+    font-family: 'Menlo', 'Monaco', 'Courier New', monospace !important;
+    font-size: 14px !important;
 }
 
-/* Cards/Containers */
-.css-card {
-    background: white;
-    padding: 1.5rem;
+/* Live Preview Box */
+.preview-box {
+    background: #ffffff;
+    padding: 2rem;
     border-radius: 12px;
     border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    margin-bottom: 1rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); /* Soft shadow */
+    font-family: 'Segoe UI', serif; 
+    line-height: 1.8;
+    color: #1e293b !important;
 }
 
-/* Custom classes for output */
-.preview-box {
-    background: white;
-    padding: 2rem;
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
-    font-family: serif; /* Simulate reader view */
-    line-height: 1.8;
-    color: #333;
+/* Links in Preview */
+.preview-box a {
+    color: #2563eb !important;
+    text-decoration: underline;
+    font-weight: 500;
 }
 </style>
 """, unsafe_allow_html=True)
