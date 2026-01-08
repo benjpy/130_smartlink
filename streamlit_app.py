@@ -57,6 +57,7 @@ if "total_cost" not in st.session_state:
 # ==================================================
 # CSS — MODERN UI (Force Light Theme)
 # ==================================================
+    # CSS — MODERN UI (Force Light Theme)
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -65,6 +66,7 @@ st.markdown("""
 [data-testid="stAppViewContainer"] {
     background-color: #f8fafc !important;
     color: #0f172a !important;
+    font-size: 16px !important; /* Increased Base Font */
 }
 
 [data-testid="stSidebar"] {
@@ -75,9 +77,10 @@ st.markdown("""
 html, body, [class*="css"], .stMarkdown, .stText, p, div, label, span, h1, h2, h3, h4, h5, h6 {
     font-family: 'Inter', sans-serif !important;
     color: #0f172a !important;
+    font-size: 16px !important; /* Global Increase */
 }
 
-/* Fix Inputs (Text Area, Inputs) which might default to dark mode styles */
+/* Fix Inputs (Text Area, Inputs) */
 div[data-baseweb="textarea"], div[data-baseweb="input"] {
     background-color: #ffffff !important;
     border: 1px solid #cbd5e1 !important;
@@ -88,60 +91,37 @@ textarea, input {
     color: #0f172a !important;
     background-color: #ffffff !important;
     caret-color: #2563eb !important;
+    font-size: 16px !important; /* Input Font */
 }
 
 textarea::placeholder, input::placeholder {
     color: #94a3b8 !important;
 }
 
-/* Radio Buttons & Checkboxes */
-div[role="radiogroup"] label {
-    color: #0f172a !important;
-}
-
 /* Headings specific overrides */
 h1 {
     font-weight: 800 !important;
+    font-size: 2.5rem !important; /* Larger H1 */
     background: -webkit-linear-gradient(135deg, #2563eb, #1e40af);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 1rem !important;
+    margin-bottom: 1.5rem !important;
+}
+
+h2, h3 {
+    font-weight: 700 !important;
 }
 
 /* Buttons */
 div.stButton > button {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
-    color: white !important;
-    border: none !important;
-    padding: 0.6rem 1.2rem !important;
-    border-radius: 10px !important;
-    font-weight: 600 !important;
-    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2) !important;
-    transition: all 0.2s !important;
-}
-div.stButton > button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 12px -1px rgba(37, 99, 235, 0.3) !important;
-}
-div.stButton > button:active {
-    transform: translateY(0);
-}
-
-/* Expander & Status */
-div[data-testid="stStatusWidget"] {
-    background-color: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
-}
-div[data-testid="stExpander"] {
-    background-color: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 8px !important;
+    font-size: 16px !important; /* Button Font */
+    padding: 0.75rem 1.5rem !important;
 }
 
 /* Code Editorish Look for the HTML Editor */
 .stTextArea textarea {
     font-family: 'Menlo', 'Monaco', 'Courier New', monospace !important;
-    font-size: 14px !important;
+    font-size: 15px !important;
 }
 
 /* Live Preview Box */
@@ -150,20 +130,173 @@ div[data-testid="stExpander"] {
     padding: 2rem;
     border-radius: 12px;
     border: 1px solid #e2e8f0;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); /* Soft shadow */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); 
     font-family: 'Segoe UI', serif; 
     line-height: 1.8;
     color: #1e293b !important;
-}
-
-/* Links in Preview */
-.preview-box a {
-    color: #2563eb !important;
-    text-decoration: underline;
-    font-weight: 500;
+    font-size: 18px !important; /* Larger Preview */
 }
 </style>
 """, unsafe_allow_html=True)
+# ... (rest of code) ...
+
+def run_autolink_process(draft, mat, meta):
+    with st.status("🚀 Processing...", expanded=True) as status:
+        
+        # 1. NER
+        st.write("🔍 Identifying Key Entities (LLM)...")
+        entities, usage_ner = identify_entities_with_llm(draft)
+        st.write(f"   — Found: {', '.join(entities)}")
+        
+        # 2. Match to DB
+        st.write("📂 Mapping to Knowledge Base...")
+        forced_map = match_entities_to_db(entities, meta)
+        
+        # 3. Candidates
+        st.write("🧠 Building Semantic Candidates...")
+        phrases = build_candidates_v2(draft, mat, meta, forced_map)
+        
+        # 4. Final Linking
+        st.write("🔗 Generating Links...")
+        resp, usage_link = call_llm_autolink(draft, phrases)
+        
+        insertions = resp.get("insertions", [])
+        
+        # 5. POST-PROCESS: Force Fallback Links
+        llm_urls = {ins.get("url") for ins in insertions if ins.get("url")}
+        
+        fallback_insertions = []
+        for url, data in forced_map.items():
+            if url not in llm_urls:
+                alias = data['alias']
+                if alias in draft:
+                    fallback_insertions.append({
+                        "anchor": alias,
+                        "url": url,
+                        "is_fallback": True
+                    })
+                    st.toast(f"Force-linked: {alias}", icon="⚡")
+        
+        final_insertions = insertions + fallback_insertions
+        
+        # 6. Apply
+        final_html = apply_insertions(draft, final_insertions)
+        
+        # Cost Logic
+        st.session_state.total_input_tokens += (usage_ner["prompt_tokens"] + usage_link["prompt_tokens"])
+        st.session_state.total_output_tokens += (usage_ner["completion_tokens"] + usage_link["completion_tokens"])
+        
+        cost_in = (st.session_state.total_input_tokens / 1_000_000) * 0.30
+        cost_out = (st.session_state.total_output_tokens / 1_000_000) * 2.50 
+        st.session_state.total_cost = cost_in + cost_out
+
+        st.session_state.result = {
+            "html": final_html,
+            "phrases": phrases,
+            "forced_map": forced_map, # SAVE THIS
+            "entities": entities # SAVE THIS
+        }
+        
+        status.update(label="✅ Done!", state="complete", expanded=False)
+
+def render_output_section():
+    st.divider()
+    st.subheader("🎉 Result")
+    
+    if "editor_content" not in st.session_state:
+        st.session_state.editor_content = st.session_state.result["html"]
+    
+    # ... (columns code) ...
+    # Skip full render here, just showing debug part below in replacement
+    
+    # 3 Column Layout for Editor, Preview, Links
+    c1, c2, c3 = st.columns([0.35, 0.35, 0.3])
+    
+    with c1:
+        st.markdown("#### ✏️ Editor (HTML)")
+        st.text_area(
+            "Edit Code", 
+            value=st.session_state.result["html"],
+            key="editor_content",
+            height=500,
+            on_change=update_result_html
+        )
+        
+    with c2:
+        st.markdown("#### 👁️ Live Preview")
+        html_content = st.session_state.result["html"]
+        st.markdown(
+            f'<div class="preview-box">{html_content}</div>', 
+            unsafe_allow_html=True
+        )
+
+    with c3:
+        st.markdown("#### 🔗 Manage Links")
+        links = extract_links_for_ui(st.session_state.result["html"])
+        current_urls = {l['url'] for l in links}
+        
+        if not links:
+            st.info("No links found.")
+        else:
+            for i, l in enumerate(links):
+                c_del, c_txt = st.columns([0.2, 0.8])
+                with c_del:
+                    st.button(
+                        "🗑️", 
+                        key=f"del_{i}", 
+                        help=f"Remove link to {l['url']}",
+                        on_click=delete_link_callback,
+                        args=(l['url'],)
+                    )
+                with c_txt:
+                    st.markdown(f"[{l['anchor']}]({l['url']})")
+                    
+    # NEW: Potential Matches Section
+    st.divider()
+    with st.expander("💡 Potential Missed Links (High Confidence)", expanded=True):
+        # Scan phrases for high score items NOT in current_urls
+        phrases = st.session_state.result.get("phrases", [])
+        missed = []
+        seen_missed = set()
+        
+        for p in phrases:
+            for c in p["candidates"]:
+                if c['url'] in current_urls: continue
+                if c['url'] in seen_missed: continue
+                
+                # Criteria for being "Potential":
+                # 1. Strong Match (NER matched)
+                # 2. High Semantic Score (e.g. > 0.70)
+                if c.get("is_strong_match") or c.get("score", 0) > 0.72:
+                    missed.append({
+                        "url": c['url'],
+                        "title": c['title'],
+                        "score": c.get("score", 0),
+                        "reason": c.get("matched_via", "Semantic Match"),
+                        "sentence": p["sentence"]
+                    })
+                    seen_missed.add(c['url'])
+        
+        if not missed:
+            st.write("No other high-confidence matches found.")
+        else:
+            # Sort by score
+            missed.sort(key=lambda x: x['score'] if x['score'] < 2 else 1.0, reverse=True) # Sort semantics, put Strong (score 1.0) at top
+            
+            st.info("These pages matched your content but weren't automatically linked. You can add them manually in the editor.")
+            
+            for m in missed[:15]: # Show top 15
+                score_display = "NER Match" if m.get("reason") != "Semantic Match" else f"Score: {m['score']:.2f}"
+                st.markdown(f"**[{m['title']}]({m['url']})** — *{score_display}*")
+                st.caption(f"Context: \"...{m['sentence'][:80]}...\"")
+                st.markdown("---")
+        
+    # DEBUG SECTION (Temporary)
+    with st.expander("🛠️ Debug: LLM Input Data"):
+        if st.session_state.result:
+            st.write("NER Entities:", st.session_state.result.get("entities", []))
+            st.write("Matched Entities (Forced Map):", [f"{k} -> {v['row']['url']}" for k,v in st.session_state.result.get("forced_map", {}).items()])
+            st.json(st.session_state.result.get("phrases", []))
 
 # ==================================================
 # Helpers: Data & Embedding
@@ -606,6 +739,7 @@ def main():
     # DEBUG SECTION (Temporary)
     with st.expander("🛠️ Debug: LLM Input Data"):
         if st.session_state.result:
+            st.write("Matched Entities (Forced Map):", [f"{k} -> {v['row']['url']}" for k,v in st.session_state.result.get("forced_map", {}).items()])
             st.json(st.session_state.result.get("phrases", []))
 
     # Sidebar Footer
