@@ -127,83 +127,21 @@ p, li, label, .stMarkdown, .stText, div, span {
     -webkit-text-fill-color: #000000 !important; /* Force override for Webkit */
 }
 
-/* Placeholder color */
-textarea::placeholder, input::placeholder {
-    color: #64748b !important;
-    opacity: 1 !important;
+/* Sidebar specific text color override */
+[data-testid="stSidebar"] p, [data-testid="stSidebar"] span, [data-testid="stSidebar"] div, [data-testid="stSidebar"] label {
+    color: #0f172a !important; /* Dark Slate to contrast with white */
 }
 
+/* Fix st.info/st.success text inside sidebar */
+[data-testid="stSidebar"] .stAlert div {
+    color: #0f172a !important;
+}
 
-/* Buttons */
-div.stButton > button {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%) !important;
-    color: white !important;
-    border: none !important;
-    padding: 0.8rem 2rem !important;
-    border-radius: 9999px !important; /* Pill shape */
-    font-size: 18px !important;
+/* Force Button Text White */
+.stButton button {
+    color: #ffffff !important;
     font-weight: 600 !important;
-    font-family: 'Outfit', sans-serif !important;
-    box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3) !important;
-    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
-}
-
-div.stButton > button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 20px -3px rgba(79, 70, 229, 0.4) !important;
-}
-
-div.stButton > button:active {
-    transform: translateY(0);
-}
-
-/* Status & Expander */
-div[data-testid="stStatusWidget"] {
-    background: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 12px !important;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;
-}
-
-.streamlit-expanderHeader {
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
-    color: var(--text-main) !important;
-    background-color: #ffffff;
-    border-radius: 8px;
-    font-size: 16px !important;
-}
-
-/* Live Preview Box */
-.preview-box {
-    background: #ffffff;
-    padding: 2.5rem;
-    border-radius: 16px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
-    font-size: 20px !important;
-    line-height: 1.8;
-}
-
-.preview-box a {
-    color: var(--primary);
-    text-decoration: none;
-    font-weight: 600;
-    border-bottom: 2px solid rgba(79, 70, 229, 0.2);
-    transition: all 0.2s;
-}
-.preview-box a:hover {
-    background-color: rgba(79, 70, 229, 0.05);
-    border-bottom-color: var(--primary);
-}
-
-/* Utility */
-.stToast {
-    background-color: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
-    box-shadow: 0 15px 25px -5px rgba(0,0,0,0.1) !important;
-    color: var(--text-main) !important;
-    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%) !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -650,12 +588,17 @@ def run_autolink_process(draft, mat, meta):
             if re.search(re.escape(anchor), draft, re.IGNORECASE):
                 candidates_map[url] = ins
         
+        # DEBUG DATA
+        merge_debug = []
+
         # B. Process Forced/Self Suggestions
         for url, data in forced_map.items():
             alias = data['alias']
             # We trust the alias exists because it came from NER/Regex, but let's be safe
             found_match = re.search(re.escape(alias), draft, re.IGNORECASE)
             
+            merge_debug.append(f"Processing Forced Check: {alias} -> Found in text? {bool(found_match)}")
+
             if found_match:
                 # Create a candidate
                 self_ins = {"anchor": alias, "url": url, "source": "forced"}
@@ -674,6 +617,7 @@ def run_autolink_process(draft, mat, meta):
         
         if "trace_log" in st.session_state:
              with st.expander("🛠️ Debug: Linking Logic", expanded=True):
+                 st.write("Merge Debug:", merge_debug)
                  st.write("Final Merged Candidates:", final_insertions)
 
         # 6. Apply
