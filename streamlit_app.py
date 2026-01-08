@@ -80,12 +80,17 @@ with col2:
             with st.status("🚀 Processing...", expanded=True) as status:
                 st.write("🔍 Extracting entities...")
                 entities, usage_ner = identify_entities_with_llm(draft_input)
+                st.caption(f"Found {len(entities)} raw entities.")
                 
                 st.write("📂 Mapping to Knowledge Base...")
                 forced_map, trace_log = match_entities_to_db(entities, meta)
                 
+                # VISIBILITY: 1. Validated Candidates (Selected)
+                validated_names = [d['alias'] for d in forced_map.values()]
+                st.success(f"✅ Validated {len(validated_names)} companies: {', '.join(validated_names)}")
+                
                 # DEBUG TRACE -> Render as code block for readability
-                with st.expander("Debugging Trace"):
+                with st.expander("Detailed Match Logic"):
                     st.code("\n".join(trace_log), language="text")
                 
                 st.write("🧠 Building Semantic Candidates...")
@@ -109,8 +114,6 @@ with col2:
                 for url, data in forced_map.items():
                     alias = data['alias']
                     # ROBUST MERGE CHECK:
-                    # If regex fails, fall back to simple string check.
-                    # This ensures "Samphire" matches even if regex is finicky.
                     found_match = False
                     if re.search(re.escape(alias), draft_input, re.IGNORECASE):
                         found_match = True
@@ -127,6 +130,13 @@ with col2:
                 
                 final_insertions = list(candidates_map.values())
                 
+                # VISIBILITY: 2. Final Links
+                if final_insertions:
+                    clean_list = [f"{i['anchor']} -> {i['url']}" for i in final_insertions]
+                    st.info(f"🔗 Generatng {len(final_insertions)} Links:\n" + "\n".join(clean_list))
+                else:
+                    st.warning("No links generated.")
+
                 st.write("📝 Applying changes...")
                 final_html = apply_insertions(draft_input, final_insertions)
                 
@@ -143,6 +153,13 @@ with col2:
                 }
                 
                 status.update(label="✅ Done!", state="complete", expanded=False)
+            
+            # RERUN to update Sidebar Stats immediately
+            st.rerun()
+
+# SIDEBAR (MOVED TO BOTTOM OR UPDATED AFTER RERUN)
+# Note: Streamlit runs script top-to-bottom. If we update stats at bottom, sidebar at top won't reflect until rerun.
+# That is why we added st.rerun() above.
 
 # RESULTS
 if st.session_state.result:
