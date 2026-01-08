@@ -459,8 +459,8 @@ def call_llm_autolink(draft: str, phrases: list):
         "phrases": phrases,
         "rules": {
             "max_links": MAX_LINKS_TOTAL,
-            "strategy": "Select the correct URL for entities in the text. Return a list of insertions.",
-            "output_format": [{"anchor": "exact text to link", "url": "url"}]
+            "strategy": "Select the correct URL for entities in the text using the provided candidates. IMPORTANT: matches provided in the candidates list with 'matched_via' are HIGH CONFIDENCE partial matches (e.g. 'Canyon Energy' -> 'Canyon Magnet') and SHOULD be linked if the context supports it.",
+            "output_format": [{"anchor": "exact literal substring from text", "url": "target url"}]
         }
     }
 
@@ -593,6 +593,11 @@ def main():
     # Output Section
     if st.session_state.result:
         render_output_section()
+        
+    # DEBUG SECTION (Temporary)
+    with st.expander("🛠️ Debug: LLM Input Data"):
+        if st.session_state.result:
+            st.json(st.session_state.result.get("phrases", []))
 
     # Sidebar Footer
     with st.sidebar:
