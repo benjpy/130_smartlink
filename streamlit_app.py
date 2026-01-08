@@ -354,7 +354,8 @@ def call_llm_autolink(draft: str, phrases: list):
         "phrases": phrases,
         "rules": {
             "max_links": MAX_LINKS_TOTAL,
-            "strategy": "Identify the best matching entities from the candidates list for the text. Prefer Companies. Link phrases that clearly refer to the candidate. ONLY return the JSON."
+            "strategy": "Identify the best matching entities from the candidates list for the text. Prefer Companies. Link phrases that clearly refer to the candidate. Return a JSON List of objects.",
+            "output_format": [{"anchor": "exact literal substring from text", "url": "target url"}]
         }
     }
 
@@ -386,11 +387,19 @@ def apply_insertions(html: str, insertions: list) -> str:
     
     # Sort insertions by anchor length descending to prefer longer matches first
     # This prevents replacing "Foobar" inside "Foobar Inc" incorrectly if "Foobar" is processed first
-    sorted_insertions = sorted(insertions, key=lambda x: len(x.get("anchor", "")), reverse=True)
+    # Safely get anchor, default to empty string
+    sorted_insertions = sorted(insertions, key=lambda x: len(x.get("anchor", "") or ""), reverse=True)
     
     for ins in sorted_insertions:
-        if ins['url'] in seen_urls: continue
-        seen_urls.add(ins['url'])
+        # Safety check for keys
+        url = ins.get('url')
+        anchor = ins.get('anchor')
+        
+        if not url or not anchor: 
+            continue
+            
+        if url in seen_urls: continue
+        seen_urls.add(url)
         cleaned_ins.append(ins)
         
     for ins in cleaned_ins:
