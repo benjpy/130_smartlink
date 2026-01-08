@@ -471,10 +471,12 @@ def apply_insertions(html: str, insertions: list) -> str:
     valid_ins = []
     seen = set()
     for ins in insertions:
-        u, a = ins.get('url'), ins.get('anchor')
+        u, a = ins.get('url'), str(ins.get('anchor', '')).strip()
         if not u or not a: continue
         if u in seen: continue
         seen.add(u)
+        # Update anchor to stripped version
+        ins['anchor'] = a
         valid_ins.append(ins)
     
     # Sort by anchor length (longest first) to match specific phrases before general ones
@@ -486,32 +488,46 @@ def apply_insertions(html: str, insertions: list) -> str:
     # Store replacements map: placeholder -> (url, anchor)
     replacements = {}
     
+    # Debug info
+    applied_count = 0
+    
     # 3. Perform replacement ONLY on text tokens
     for i, ins in enumerate(valid_ins):
         anchor = ins['anchor']
         url = ins['url']
-        # Use a short, opaque placeholder that won't trigger other matches
+        # Use a short, opaque placeholder
         pid = f"__L_{i}__" 
         replacements[pid] = f'<a href="{url}">{anchor}</a>'
         
-        pattern = re.compile(re.escape(anchor), re.IGNORECASE)
+        # Use simple escaping, verify regex validity
+        safe_anchor = re.escape(anchor)
+        # Ensure we don't match inside words if possible, but for now strict substring is safer for "Samphire"
+        # We can add \b boundary if needed, but sometimes it breaks formatted text.
+        pattern = re.compile(safe_anchor, re.IGNORECASE)
         
         found_for_this_link = False
         
         for k, token in enumerate(tokens):
-            # Skip tags or tokens that are already placeholders (though our PID is unique enough)
+            # Skip tags or placeholders
             if token.startswith('<') or token.startswith('__L_'):
                 continue
                 
             if found_for_this_link: break
             
-            if pattern.search(token):
+            # Search
+            match = pattern.search(token)
+            if match:
                 # Replace FIRST occurrence in this token
-                new_token = pattern.sub(pid, token, count=1)
-                if new_token != token:
-                    tokens[k] = new_token
-                    found_for_this_link = True
-                    
+                # We use the matched text to preserve case if we wanted, but here we replace with placeholder
+                new_token = token[:match.start()] + pid + token[match.end():]
+                tokens[k] = new_token
+                found_for_this_link = True
+                applied_count += 1
+                
+        if not found_for_this_link:
+             # DEBUG: Why was it missed?
+             pass # st.toast(f"Missed link insertion for: {anchor}", icon="⚠️")
+
     # 4. Reassemble
     final_html = "".join(tokens)
     
