@@ -283,7 +283,13 @@ def match_entities_to_db(entities, meta):
         # 1. Exact match
         if n_ent in meta_index:
             row = meta_index[n_ent]
-            forced[row["url"]] = {"row": row, "alias": ent}
+            url = row["url"]
+            # Check for overwrite
+            if url in forced:
+                if len(ent) > len(forced[url]['alias']):
+                    forced[url] = {"row": row, "alias": ent}
+            else:
+                forced[url] = {"row": row, "alias": ent}
             continue
             
         # 2. Token Overlap (Set Intersection) with CamelCase handling
@@ -340,11 +346,26 @@ def match_entities_to_db(entities, meta):
         if len(ent_first) >= 3: threshold = 0.45 
         
         if best_score > threshold: 
-            forced[best_row["url"]] = {"row": best_row, "alias": ent}
-            # TRACE LOG
-            if "samphire" in n_ent:
-                if "trace_log" not in st.session_state: st.session_state.trace_log = []
-                st.session_state.trace_log.append(f"ACCEPTED '{ent}' -> {best_row['url']} (Score: {best_score:.2f} > {threshold})")
+            url = best_row["url"]
+            should_add = True
+            
+            if url in forced:
+                # ONLY OVERWRITE IF NEW ALIAS IS LONGER
+                # e.g. "Samphire" (8) vs "S." (2) -> Keep Samphire
+                existing_alias = forced[url]['alias']
+                if len(ent) <= len(existing_alias):
+                    should_add = False
+                    # Log rejection purely for debug
+                    if "samphire" in n_ent:
+                        if "trace_log" not in st.session_state: st.session_state.trace_log = []
+                        st.session_state.trace_log.append(f"SKIPPED Overwrite '{ent}' -> {url} (Existing: '{existing_alias}' is longer)")
+            
+            if should_add:
+                forced[url] = {"row": best_row, "alias": ent}
+                # TRACE LOG
+                if "samphire" in n_ent:
+                    if "trace_log" not in st.session_state: st.session_state.trace_log = []
+                    st.session_state.trace_log.append(f"ACCEPTED '{ent}' -> {url} (Score: {best_score:.2f} > {threshold})")
             continue
         else:
              if "samphire" in n_ent:
