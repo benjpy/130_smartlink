@@ -66,7 +66,19 @@ def identify_entities_with_llm(draft: str):
         pass
 
     # 2. Regex Fallback
-    regex_matches = re.findall(r'\\b[A-Z][a-zA-Z0-9]+\\b', draft)
+    # Updated to support hyphenated names like "R-Zero", "Bio-Fluff"
+    # Matches: Capital letter, followed by alphanums, optionally followed by groups starting with hyphen.
+    regex_matches = re.findall(r'\b[A-Z][a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*\b|\b[A-Z][a-zA-Z0-9]*-[a-zA-Z0-9]+\b', draft)
+    
+    # Simple clean up of duplicates from the OR condition if any
+    # Actually, simpler regex: \b[A-Z][a-zA-Z0-9\-]*(?<!-)\b
+    # content: Start with Upper, allow alnum or dash, ensure doesn't end with dash.
+    # But strictly: R-Zero. 
+    # Let's use: \b[A-Z][a-zA-Z0-9]*(?:-[a-zA-Z0-9]+)+\b  (Hyphenated)
+    #           | \b[A-Z][a-zA-Z0-9]+\b                (Standard)
+    
+    better_matches = re.findall(r'\b[A-Z][a-zA-Z0-9]*(?:-[a-zA-Z0-9]+)*\b', draft)
+    regex_matches = better_matches
     
     STOPWORDS = {
         "The", "A", "And", "Or", "In", "On", "At", "To", "For", "Of", "With", "By", "From", "Up", "Out", 
