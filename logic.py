@@ -310,7 +310,8 @@ def apply_insertions(html: str, insertions: list) -> str:
         
         # Scan text tokens
         for k, token in enumerate(tokens):
-            if token.startswith('<') or token.startswith('__L_'): continue
+            # Only skip actual HTML tags
+            if token.startswith('<'): continue
             if found: break
             
             # Simple substring search (case-insensitive)
@@ -322,11 +323,7 @@ def apply_insertions(html: str, insertions: list) -> str:
                 # We slice the original token to preserve original case
                 end_idx = start_idx + len(anchor)
                 
-                # Check boundaries (optional, but safe to skip for robustness if needed)
-                # For now: We allow partial word matches if it means success? 
-                # Better: Check strictly if we want. But user wants Samphire fixed.
-                # Let's just do it.
-                
+                # Robust replacement
                 new_token = token[:start_idx] + pid + token[end_idx:]
                 tokens[k] = new_token
                 found = True

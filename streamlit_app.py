@@ -132,8 +132,13 @@ with col2:
                 
                 # VISIBILITY: 2. Final Links
                 if final_insertions:
-                    clean_list = [f"{i['anchor']} -> {i['url']}" for i in final_insertions]
-                    st.info(f"🔗 Generatng {len(final_insertions)} Links:\n" + "\n".join(clean_list))
+                    st.success(f"🔗 Generated {len(final_insertions)} Links")
+                    st.dataframe(
+                        final_insertions, 
+                        column_order=["anchor", "url", "source"],
+                        use_container_width=True,
+                        hide_index=True
+                    )
                 else:
                     st.warning("No links generated.")
 
