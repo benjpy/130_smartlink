@@ -1,7 +1,8 @@
 import re
 
 def normalize(text: str) -> str:
-    """Lowercases and keeps only alphanumeric and spaces."""
+    """Lowercases and keeps only alphanumeric and spaces. Replaces hyphens with spaces."""
+    text = text.replace("-", " ") 
     return re.sub(r"[^a-z0-9 ]+", "", text.lower())
 
 def split_sentences(text: str, max_sentences=40):

@@ -89,9 +89,23 @@ def identify_entities_with_llm(draft: str):
         "Our", "Your", "My", "Their", "His", "Her", "Its"
     } 
     
+    # Existing entities set for fast lookup
+    existing_lower = {e.lower() for e in entities}
+    
     for m in regex_matches:
-        if len(m) >= 3 and m not in STOPWORDS and m not in entities:
-             entities.append(m)
+        if len(m) < 3: continue
+        if m in STOPWORDS: continue
+        
+        # 1. Dupe Check
+        if m.lower() in existing_lower: continue
+        
+        # 2. Substring Check (CRITICAL FIX)
+        # If "Energy" is found, but "Canyon Energy" is already in entities, DROP "Energy".
+        # This prevents generic parts of names from becoming standalone bad links.
+        if any(m.lower() in e.lower() for e in entities):
+            continue
+            
+        entities.append(m)
              
     return entities, usage
 
